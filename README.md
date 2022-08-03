@@ -77,13 +77,13 @@ $neighbors = Item::orderByRaw('factors <-> ?', array('[1,2,3]'))->take(5)->get()
 Insert a vector
 
 ```php
-pg_query_params($db, 'INSERT INTO items (factors) VALUES ($1)', array('[1,1,1]'));
+pg_query_params($db, 'INSERT INTO items (factors) VALUES ($1)', array('[1,2,3]'));
 ```
 
 Get the nearest neighbors to a vector
 
 ```php
-$result = pg_query_params($db, 'SELECT * FROM items ORDER BY factors <-> $1 LIMIT 5', array('[1,1,1]'));
+$result = pg_query_params($db, 'SELECT * FROM items ORDER BY factors <-> $1 LIMIT 5', array('[1,2,3]'));
 ```
 
 See a [full example](example.php)
