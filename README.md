@@ -86,6 +86,10 @@ $result = pg_query_params($db, 'SELECT * FROM items ORDER BY factors <-> $1 LIMI
 
 See a [full example](example.php)
 
+## History
+
+View the [changelog](https://github.com/pgvector/pgvector-php/blob/master/CHANGELOG.md)
+
 ## Contributing
 
 Everyone is encouraged to help improve this project. Here are a few ways you can help:
