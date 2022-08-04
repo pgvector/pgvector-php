@@ -72,6 +72,12 @@ Get the nearest neighbors
 $neighbors = Item::orderByRaw('factors <-> ?', array('[1,2,3]'))->take(5)->get();
 ```
 
+Get the distances
+
+```php
+$distances = Item::selectRaw('factors <-> ? AS distance', array('[1,2,3]'))->pluck('distance');
+```
+
 Add an approximate index in a migration
 
 ```php
