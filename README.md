@@ -72,6 +72,22 @@ Get the nearest neighbors
 $neighbors = Item::orderByRaw('factors <-> ?', array('[1,2,3]'))->take(5)->get();
 ```
 
+Add an approximate index in a migration
+
+```php
+public function up()
+{
+    DB::statement('CREATE INDEX my_index ON items USING ivfflat (factors vector_l2_ops)');
+}
+
+public function down()
+{
+    DB::statement('DROP INDEX my_index');
+}
+```
+
+Use `vector_ip_ops` for inner product and `vector_cosine_ops` for cosine distance
+
 ### PHP
 
 Insert a vector
