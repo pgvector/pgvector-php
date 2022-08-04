@@ -16,7 +16,7 @@ Follow the instructions for your database library:
 Install the package
 
 ```sh
-composer require ankane/pgvector
+# TODO
 ```
 
 Create the `vector` extension
