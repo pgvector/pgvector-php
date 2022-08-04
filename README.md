@@ -16,7 +16,7 @@ Follow the instructions for your database library:
 Install the package
 
 ```sh
-# TODO
+# TODO - not on Packagist yet
 ```
 
 Create the `vector` extension
