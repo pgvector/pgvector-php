@@ -40,7 +40,7 @@ class PgvectorServiceProvider extends ServiceProvider
             }
         });
 
-        Blueprint::macro('vector', function($column, $dimensions = NULL) {
+        Blueprint::macro('vector', function ($column, $dimensions = null) {
             return $this->addColumn('vector', $column, compact('dimensions'));
         });
     }
