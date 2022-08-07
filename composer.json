@@ -20,11 +20,17 @@
     "require": {
         "php": ">= 7.4"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    },
     "extra": {
         "laravel": {
             "providers": [
                 "Pgvector\\Laravel\\PgvectorServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "test": "phpunit tests"
     }
 }

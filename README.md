@@ -104,6 +104,7 @@ To get started with development:
 ```sh
 git clone https://github.com/pgvector/pgvector-php.git
 cd pgvector-php
+composer install
 createdb pgvector_php_test
-php example.php
+composer test
 ```
