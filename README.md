@@ -72,6 +72,12 @@ Use `vector_ip_ops` for inner product and `vector_cosine_ops` for cosine distanc
 
 ### PHP
 
+Create a table
+
+```php
+pg_query($db, 'CREATE TABLE items (factors vector(3))');
+```
+
 Insert a vector
 
 ```php
