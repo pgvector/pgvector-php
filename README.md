@@ -90,7 +90,7 @@ Get the nearest neighbors to a vector
 $result = pg_query_params($db, 'SELECT * FROM items ORDER BY factors <-> $1 LIMIT 5', ['[1,2,3]']);
 ```
 
-See a [full example](example.php)
+See a [full example](examples/pgsql.php)
 
 ## History
 
