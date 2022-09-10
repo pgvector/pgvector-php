@@ -33,13 +33,11 @@ final class LaravelTest extends TestCase
     public function setUp(): void
     {
         Item::truncate();
-        foreach (['[1,1,1]', '[2,2,2]', '[1,1,2]'] as $i => $v) {
-            Item::create(['id' => $i + 1, 'factors' => $v]);
-        }
     }
 
     public function testL2Distance()
     {
+        $this->createItems();
         $neighbors = Item::orderByRaw('factors <-> ?', ['[1,1,1]'])->take(5)->get();
         $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
         $this->assertEquals(['[1,1,1]', '[1,1,2]', '[2,2,2]'], $neighbors->pluck('factors')->toArray());
@@ -47,19 +45,29 @@ final class LaravelTest extends TestCase
 
     public function testMaxInnerProduct()
     {
+        $this->createItems();
         $neighbors = Item::orderByRaw('factors <#> ?', ['[1,1,1]'])->take(5)->get();
         $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
     }
 
     public function testCosineDistance()
     {
+        $this->createItems();
         $neighbors = Item::orderByRaw('factors <=> ?', ['[1,1,1]'])->take(5)->get();
         $this->assertEquals([1, 2, 3], $neighbors->pluck('id')->toArray());
     }
 
     public function testDistances()
     {
+        $this->createItems();
         $distances = Item::selectRaw('factors <-> ? AS distance', ['[1,1,1]'])->pluck('distance');
         $this->assertEqualsWithDelta([0, sqrt(3), 1], $distances->toArray(), 0.00001);
+    }
+
+    private function createItems()
+    {
+        foreach (['[1,1,1]', '[2,2,2]', '[1,1,2]'] as $i => $v) {
+            Item::create(['id' => $i + 1, 'factors' => $v]);
+        }
     }
 }
