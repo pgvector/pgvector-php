@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 $capsule = new Capsule();
 $capsule->addConnection([
     'driver' => 'pgsql',
-    'database' => 'pgvector_php_test'
+    'database' => 'pgvector_php_test',
+    'prefix' => 'laravel_'
 ]);
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
