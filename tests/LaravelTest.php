@@ -27,7 +27,7 @@ class Item extends Model
 {
     public $timestamps = false;
     protected $fillable = ['id', 'factors'];
-    protected $casts = ['factors' => Pgvector\Laravel\Vector::class];
+    protected $casts = ['factors' => Pgvector\Laravel\Vector::class.':3'];
 }
 
 final class LaravelTest extends TestCase
