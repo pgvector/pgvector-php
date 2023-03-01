@@ -20,13 +20,14 @@ Capsule::statement('CREATE EXTENSION IF NOT EXISTS vector');
 Capsule::schema()->dropIfExists('items');
 Capsule::schema()->create('items', function ($table) {
     $table->increments('id');
-    $table->vector('factors', 3);
+    $table->vector('factors', 3)->nullable();
 });
 
 class Item extends Model
 {
     public $timestamps = false;
     protected $fillable = ['id', 'factors'];
+    protected $casts = ['factors' => Pgvector\Laravel\Vector::class];
 }
 
 final class LaravelTest extends TestCase
@@ -41,7 +42,7 @@ final class LaravelTest extends TestCase
         $this->createItems();
         $neighbors = Item::orderByRaw('factors <-> ?', ['[1,1,1]'])->take(5)->get();
         $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
-        $this->assertEquals(['[1,1,1]', '[1,1,2]', '[2,2,2]'], $neighbors->pluck('factors')->toArray());
+        $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], $neighbors->pluck('factors')->toArray());
     }
 
     public function testMaxInnerProduct()
@@ -65,9 +66,23 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([0, sqrt(3), 1], $distances->toArray(), 0.00001);
     }
 
+    public function testCast()
+    {
+        Item::create(['id' => 1, 'factors' => [1, 2, 3]]);
+        $item = Item::find(1);
+        $this->assertEquals([1, 2, 3], $item->factors);
+    }
+
+    public function testCastNull()
+    {
+        Item::create(['id' => 1]);
+        $item = Item::find(1);
+        $this->assertNull($item->factors);
+    }
+
     private function createItems()
     {
-        foreach (['[1,1,1]', '[2,2,2]', '[1,1,2]'] as $i => $v) {
+        foreach ([[1, 1, 1], [2, 2, 2], [1, 1, 2]] as $i => $v) {
             Item::create(['id' => $i + 1, 'factors' => $v]);
         }
     }
