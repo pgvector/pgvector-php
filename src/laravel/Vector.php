@@ -9,7 +9,7 @@ class Vector implements CastsAttributes
 {
     public function get(Model $model, string $key, mixed $value, array $attributes): ?array
     {
-        if (isset($value)) {
+        if (!is_null($value)) {
             return json_decode($value, true);
         }
         return null;
