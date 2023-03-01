@@ -10,8 +10,8 @@ class Vector implements CastsAttributes
     public function get(Model $model, string $key, mixed $value, array $attributes): ?array
     {
         if (!is_null($value)) {
-            // TODO ensure array
-            return json_decode($value, true, 2, JSON_THROW_ON_ERROR);
+            $decoded = json_decode($value, true, 2, JSON_THROW_ON_ERROR);
+            return is_array($decoded) ? $decoded : null;
         }
         return null;
     }
@@ -21,7 +21,7 @@ class Vector implements CastsAttributes
         if (is_array($value)) {
             return json_encode($value, JSON_THROW_ON_ERROR, 1);
         }
-        // TODO throw error
-        return $value;
+        // TODO throw error?
+        return null;
     }
 }
