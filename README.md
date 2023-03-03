@@ -30,7 +30,7 @@ You can now use the `vector` type in future migrations
 
 ```php
 Schema::create('items', function (Blueprint $table) {
-    $table->vector('factors', 3);
+    $table->vector('embedding', 3);
 });
 ```
 
@@ -38,20 +38,20 @@ Insert a vector
 
 ```php
 $item = new Item();
-$item->factors = '[1,2,3]';
+$item->embedding = '[1,2,3]';
 $item->save();
 ```
 
 Get the nearest neighbors
 
 ```php
-$neighbors = Item::orderByRaw('factors <-> ?', ['[1,2,3]'])->take(5)->get();
+$neighbors = Item::orderByRaw('embedding <-> ?', ['[1,2,3]'])->take(5)->get();
 ```
 
 Get the distances
 
 ```php
-$distances = Item::selectRaw('factors <-> ? AS distance', ['[1,2,3]'])->pluck('distance');
+$distances = Item::selectRaw('embedding <-> ? AS distance', ['[1,2,3]'])->pluck('distance');
 ```
 
 Add an approximate index in a migration
@@ -59,7 +59,7 @@ Add an approximate index in a migration
 ```php
 public function up()
 {
-    DB::statement('CREATE INDEX my_index ON items USING ivfflat (factors vector_l2_ops)');
+    DB::statement('CREATE INDEX my_index ON items USING ivfflat (embedding vector_l2_ops)');
 }
 
 public function down()
@@ -75,19 +75,19 @@ Use `vector_ip_ops` for inner product and `vector_cosine_ops` for cosine distanc
 Create a table
 
 ```php
-pg_query($db, 'CREATE TABLE items (factors vector(3))');
+pg_query($db, 'CREATE TABLE items (embedding vector(3))');
 ```
 
 Insert a vector
 
 ```php
-pg_query_params($db, 'INSERT INTO items (factors) VALUES ($1)', ['[1,2,3]']);
+pg_query_params($db, 'INSERT INTO items (embedding) VALUES ($1)', ['[1,2,3]']);
 ```
 
 Get the nearest neighbors to a vector
 
 ```php
-$result = pg_query_params($db, 'SELECT * FROM items ORDER BY factors <-> $1 LIMIT 5', ['[1,2,3]']);
+$result = pg_query_params($db, 'SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5', ['[1,2,3]']);
 ```
 
 See a [full example](examples/pgsql.php)

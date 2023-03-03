@@ -20,14 +20,14 @@ Capsule::statement('CREATE EXTENSION IF NOT EXISTS vector');
 Capsule::schema()->dropIfExists('items');
 Capsule::schema()->create('items', function ($table) {
     $table->increments('id');
-    $table->vector('factors', 3)->nullable();
+    $table->vector('embedding', 3)->nullable();
 });
 
 class Item extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['id', 'factors'];
-    protected $casts = ['factors' => Pgvector\Laravel\Vector::class.':3'];
+    protected $fillable = ['id', 'embedding'];
+    protected $casts = ['embedding' => Pgvector\Laravel\Vector::class.':3'];
 }
 
 final class LaravelTest extends TestCase
@@ -40,50 +40,50 @@ final class LaravelTest extends TestCase
     public function testL2Distance()
     {
         $this->createItems();
-        $neighbors = Item::orderByRaw('factors <-> ?', ['[1,1,1]'])->take(5)->get();
+        $neighbors = Item::orderByRaw('embedding <-> ?', ['[1,1,1]'])->take(5)->get();
         $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
-        $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], $neighbors->pluck('factors')->toArray());
+        $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], $neighbors->pluck('embedding')->toArray());
     }
 
     public function testMaxInnerProduct()
     {
         $this->createItems();
-        $neighbors = Item::orderByRaw('factors <#> ?', ['[1,1,1]'])->take(5)->get();
+        $neighbors = Item::orderByRaw('embedding <#> ?', ['[1,1,1]'])->take(5)->get();
         $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
     }
 
     public function testCosineDistance()
     {
         $this->createItems();
-        $neighbors = Item::orderByRaw('factors <=> ?', ['[1,1,1]'])->take(5)->get();
+        $neighbors = Item::orderByRaw('embedding <=> ?', ['[1,1,1]'])->take(5)->get();
         $this->assertEquals([1, 2, 3], $neighbors->pluck('id')->toArray());
     }
 
     public function testDistances()
     {
         $this->createItems();
-        $distances = Item::selectRaw('factors <-> ? AS distance', ['[1,1,1]'])->pluck('distance');
+        $distances = Item::selectRaw('embedding <-> ? AS distance', ['[1,1,1]'])->pluck('distance');
         $this->assertEqualsWithDelta([0, sqrt(3), 1], $distances->toArray(), 0.00001);
     }
 
     public function testCast()
     {
-        Item::create(['id' => 1, 'factors' => [1, 2, 3]]);
+        Item::create(['id' => 1, 'embedding' => [1, 2, 3]]);
         $item = Item::find(1);
-        $this->assertEquals([1, 2, 3], $item->factors);
+        $this->assertEquals([1, 2, 3], $item->embedding);
     }
 
     public function testCastNull()
     {
         Item::create(['id' => 1]);
         $item = Item::find(1);
-        $this->assertNull($item->factors);
+        $this->assertNull($item->embedding);
     }
 
     private function createItems()
     {
         foreach ([[1, 1, 1], [2, 2, 2], [1, 1, 2]] as $i => $v) {
-            Item::create(['id' => $i + 1, 'factors' => $v]);
+            Item::create(['id' => $i + 1, 'embedding' => $v]);
         }
     }
 }
