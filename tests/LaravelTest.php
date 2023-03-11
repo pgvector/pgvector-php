@@ -43,7 +43,7 @@ final class LaravelTest extends TestCase
         $this->createItems();
         $neighbors = Item::orderByRaw('embedding <-> ?', [new Vector([1, 1, 1])])->take(5)->get();
         $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
-        $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], $neighbors->pluck('embedding')->toArray());
+        $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], array_map(fn ($v) => $v->toArray(), $neighbors->pluck('embedding')->toArray()));
     }
 
     public function testMaxInnerProduct()
@@ -71,7 +71,7 @@ final class LaravelTest extends TestCase
     {
         Item::create(['id' => 1, 'embedding' => [1, 2, 3]]);
         $item = Item::find(1);
-        $this->assertEquals([1, 2, 3], $item->embedding);
+        $this->assertEquals([1, 2, 3], $item->embedding->toArray());
     }
 
     public function testCastNull()

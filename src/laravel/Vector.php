@@ -16,14 +16,15 @@ class Vector extends \Pgvector\Vector implements Castable
                 // no need for dimensions
             }
 
-            public function get(Model $model, string $key, mixed $value, array $attributes): ?array
+            public function get(Model $model, string $key, mixed $value, array $attributes): ?Vector
             {
                 if (is_null($value)) {
                     return null;
                 }
 
-                // TODO return Vector?
-                return (new Vector($value))->toArray();
+                // return Vector instead of array
+                // since Vector needed for orderByRaw and selectRaw
+                return new Vector($value);
             }
 
             public function set(Model $model, string $key, mixed $value, array $attributes): ?string
