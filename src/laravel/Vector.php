@@ -6,20 +6,8 @@ use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
-class Vector implements Castable
+class Vector extends \Pgvector\Vector implements Castable
 {
-    protected $value;
-
-    public function __construct($value)
-    {
-        $this->value = $value;
-    }
-
-    public function __toString()
-    {
-        return json_encode($this->value, JSON_THROW_ON_ERROR, 1);
-    }
-
     public static function castUsing(array $arguments): CastsAttributes
     {
         return new class ($arguments) implements CastsAttributes {
@@ -34,8 +22,7 @@ class Vector implements Castable
             public function get(Model $model, string $key, mixed $value, array $attributes): ?array
             {
                 if (!is_null($value)) {
-                    $decoded = json_decode($value, true, 2, JSON_THROW_ON_ERROR);
-                    return is_array($decoded) ? $decoded : null;
+                    return (new Vector($value))->toArray();
                 }
                 return null;
             }
