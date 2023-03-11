@@ -19,6 +19,11 @@ class Vector
                 throw new \InvalidArgumentException("Invalid text representation");
             }
         }
+
+        if (!is_array($value)) {
+            throw new \InvalidArgumentException("Expected array");
+        }
+
         $this->value = $value;
     }
 
