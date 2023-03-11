@@ -8,6 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vector implements Castable
 {
+    protected $value;
+
+    public function __construct($value)
+    {
+        $this->value = $value;
+    }
+
+    public function __toString()
+    {
+        return json_encode($this->value, JSON_THROW_ON_ERROR, 1);
+    }
+
     public static function castUsing(array $arguments): CastsAttributes
     {
         return new class ($arguments) implements CastsAttributes {
@@ -34,7 +46,7 @@ class Vector implements Castable
                         // TODO throw error?
                         return null;
                     }
-                    return json_encode($value, JSON_THROW_ON_ERROR, 1);
+                    return (string) new Vector($value);
                 }
                 // TODO throw error?
                 return null;

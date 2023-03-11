@@ -4,6 +4,7 @@ use PHPUnit\Framework\TestCase;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\Model;
+use Pgvector\Laravel\Vector;
 
 $capsule = new Capsule();
 $capsule->addConnection([
@@ -27,7 +28,7 @@ class Item extends Model
 {
     public $timestamps = false;
     protected $fillable = ['id', 'embedding'];
-    protected $casts = ['embedding' => Pgvector\Laravel\Vector::class.':3'];
+    protected $casts = ['embedding' => Vector::class.':3'];
 }
 
 final class LaravelTest extends TestCase
@@ -40,7 +41,7 @@ final class LaravelTest extends TestCase
     public function testL2Distance()
     {
         $this->createItems();
-        $neighbors = Item::orderByRaw('embedding <-> ?', ['[1,1,1]'])->take(5)->get();
+        $neighbors = Item::orderByRaw('embedding <-> ?', [new Vector([1, 1, 1])])->take(5)->get();
         $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
         $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], $neighbors->pluck('embedding')->toArray());
     }
@@ -48,21 +49,21 @@ final class LaravelTest extends TestCase
     public function testMaxInnerProduct()
     {
         $this->createItems();
-        $neighbors = Item::orderByRaw('embedding <#> ?', ['[1,1,1]'])->take(5)->get();
+        $neighbors = Item::orderByRaw('embedding <#> ?', [new Vector([1, 1, 1])])->take(5)->get();
         $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
     }
 
     public function testCosineDistance()
     {
         $this->createItems();
-        $neighbors = Item::orderByRaw('embedding <=> ?', ['[1,1,1]'])->take(5)->get();
+        $neighbors = Item::orderByRaw('embedding <=> ?', [new Vector([1, 1, 1])])->take(5)->get();
         $this->assertEquals([1, 2, 3], $neighbors->pluck('id')->toArray());
     }
 
     public function testDistances()
     {
         $this->createItems();
-        $distances = Item::selectRaw('embedding <-> ? AS distance', ['[1,1,1]'])->pluck('distance');
+        $distances = Item::selectRaw('embedding <-> ? AS distance', [new Vector([1, 1, 1])])->pluck('distance');
         $this->assertEqualsWithDelta([0, sqrt(3), 1], $distances->toArray(), 0.00001);
     }
 
