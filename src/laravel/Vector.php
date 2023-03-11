@@ -30,6 +30,7 @@ class Vector implements Castable
                 $this->dimensions = count($arguments) > 0 ? $arguments[0] : null;
             }
 
+            // TODO return Vector?
             public function get(Model $model, string $key, mixed $value, array $attributes): ?array
             {
                 if (!is_null($value)) {
