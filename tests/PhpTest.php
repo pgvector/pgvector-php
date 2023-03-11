@@ -21,6 +21,7 @@ final class PhpTest extends TestCase
 
         $embedding = new Vector([1, 1, 1]);
         $this->assertEquals('[1,1,1]', (string) $embedding);
+        $this->assertEquals([1, 1, 1], $embedding->toArray());
 
         $ids = [];
         $embeddings = [];
