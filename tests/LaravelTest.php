@@ -28,7 +28,7 @@ class Item extends Model
 {
     public $timestamps = false;
     protected $fillable = ['id', 'embedding'];
-    protected $casts = ['embedding' => Vector::class.':3'];
+    protected $casts = ['embedding' => Vector::class];
 }
 
 final class LaravelTest extends TestCase
