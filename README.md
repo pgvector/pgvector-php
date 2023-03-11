@@ -34,24 +34,39 @@ Schema::create('items', function (Blueprint $table) {
 });
 ```
 
+Update your model
+
+```php
+use Pgvector\Laravel\Vector;
+
+class Item extends Model
+{
+    protected $casts = ['embedding' => Vector::class];
+}
+```
+
 Insert a vector
 
 ```php
 $item = new Item();
-$item->embedding = '[1,2,3]';
+$item->embedding = [1, 2, 3];
 $item->save();
 ```
 
 Get the nearest neighbors
 
 ```php
-$neighbors = Item::orderByRaw('embedding <-> ?', ['[1,2,3]'])->take(5)->get();
+use Pgvector\Laravel\Vector;
+
+$embedding = new Vector([1, 2, 3]);
+$neighbors = Item::orderByRaw('embedding <-> ?', [$embedding])->take(5)->get();
 ```
 
 Get the distances
 
 ```php
-$distances = Item::selectRaw('embedding <-> ? AS distance', ['[1,2,3]'])->pluck('distance');
+$embedding = new Vector([1, 2, 3]);
+$distances = Item::selectRaw('embedding <-> ? AS distance', [$embedding])->pluck('distance');
 ```
 
 Add an approximate index in a migration
@@ -81,13 +96,17 @@ pg_query($db, 'CREATE TABLE items (embedding vector(3))');
 Insert a vector
 
 ```php
-pg_query_params($db, 'INSERT INTO items (embedding) VALUES ($1)', ['[1,2,3]']);
+use Pgvector\Vector;
+
+$embedding = new Vector([1, 2, 3]);
+pg_query_params($db, 'INSERT INTO items (embedding) VALUES ($1)', [$embedding]);
 ```
 
 Get the nearest neighbors to a vector
 
 ```php
-$result = pg_query_params($db, 'SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5', ['[1,2,3]']);
+$embedding = new Vector([1, 2, 3]);
+$result = pg_query_params($db, 'SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5', [$embedding]);
 ```
 
 See a [full example](examples/pgsql.php)
