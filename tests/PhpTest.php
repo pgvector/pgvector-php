@@ -19,12 +19,9 @@ final class PhpTest extends TestCase
         $embedding3 = new Vector([1, 1, 2]);
         pg_query_params($db, 'INSERT INTO items (embedding) VALUES ($1), ($2), ($3)', [$embedding1, $embedding2, $embedding3]);
 
-        $embedding = new Vector([1, 1, 1]);
-        $this->assertEquals('[1,1,1]', (string) $embedding);
-        $this->assertEquals([1, 1, 1], $embedding->toArray());
-
         $ids = [];
         $embeddings = [];
+        $embedding = new Vector([1, 1, 1]);
         $result = pg_query_params($db, 'SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5', [$embedding]);
         while ($row = pg_fetch_array($result)) {
             $ids[] = $row['id'];
@@ -37,5 +34,33 @@ final class PhpTest extends TestCase
         $this->assertEquals([1, 1, 1], (new Vector($embeddings[0]))->toArray());
 
         pg_close($db);
+    }
+
+    public function testToString()
+    {
+        $embedding = new Vector([1, 1, 1]);
+        $this->assertEquals('[1,1,1]', (string) $embedding);
+    }
+
+    public function testToArray()
+    {
+        $embedding = new Vector([1, 1, 1]);
+        $this->assertEquals([1, 1, 1], $embedding->toArray());
+    }
+
+    public function testInvalidString()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid text representation');
+
+        new Vector("true");
+    }
+
+    public function testInvalidJson()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid text representation');
+
+        new Vector("tru");
     }
 }

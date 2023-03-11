@@ -9,8 +9,15 @@ class Vector
     public function __construct($value)
     {
         if (is_string($value)) {
-            // TODO ensure array
-            $value = json_decode($value, true, 2, JSON_THROW_ON_ERROR);
+            try {
+                $value = json_decode($value, true, 2, JSON_THROW_ON_ERROR);
+            } catch (\Exception $e) {
+                // do nothing
+            }
+
+            if (!is_array($value)) {
+                throw new \InvalidArgumentException("Invalid text representation");
+            }
         }
         $this->value = $value;
     }
