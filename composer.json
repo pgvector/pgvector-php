@@ -14,6 +14,7 @@
     ],
     "autoload": {
         "psr-4": {
+            "Pgvector\\": "src/",
             "Pgvector\\Laravel\\": "src/laravel/"
         }
     },
