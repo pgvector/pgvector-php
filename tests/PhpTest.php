@@ -19,9 +19,11 @@ final class PhpTest extends TestCase
         $embedding3 = new Vector([1, 1, 2]);
         pg_query_params($db, 'INSERT INTO items (embedding) VALUES ($1), ($2), ($3)', [$embedding1, $embedding2, $embedding3]);
 
+        $embedding = new Vector([1, 1, 1]);
+        $this->assertEquals('[1,1,1]', (string) $embedding);
+
         $ids = [];
         $embeddings = [];
-        $embedding = new Vector([1, 1, 1]);
         $result = pg_query_params($db, 'SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5', [$embedding]);
         while ($row = pg_fetch_array($result)) {
             $ids[] = $row['id'];
