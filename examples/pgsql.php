@@ -18,7 +18,7 @@ pg_query_params($db, 'INSERT INTO items (embedding) VALUES ($1), ($2), ($3)', [$
 $embedding = new Vector([1, 1, 1]);
 $result = pg_query_params($db, 'SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5', [$embedding]);
 while ($row = pg_fetch_array($result)) {
-    echo $row['id'] . ': ' . $row['embedding'] . "\n";
+    echo $row['id'] . ': ' . new Vector($row['embedding']) . "\n";
 }
 pg_free_result($result);
 
