@@ -17,3 +17,4 @@ jobs:
           make
           sudo make install
       - run: composer test
+      - run: php examples/pgsql.php
