@@ -20,6 +20,7 @@ class Vector
             }
         }
 
+        // TODO use array_is_list when PHP < 8.1 no longer supported
         if (!is_array($value)) {
             throw new \InvalidArgumentException("Expected array");
         }
