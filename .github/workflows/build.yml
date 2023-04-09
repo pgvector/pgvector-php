@@ -2,10 +2,20 @@ name: build
 on: [push, pull_request]
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: 8.2
+          - php: "8.0"
+            composer: --prefer-lowest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: composer install
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+      - run: composer update ${{ matrix.composer }}
       - uses: ankane/setup-postgres@v1
         with:
           database: pgvector_php_test

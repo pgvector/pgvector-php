@@ -16,7 +16,7 @@ class Vector extends \Pgvector\Vector implements Castable
                 // no need for dimensions
             }
 
-            public function get(Model $model, string $key, mixed $value, array $attributes): ?Vector
+            public function get(mixed $model, string $key, mixed $value, array $attributes): ?Vector
             {
                 if (is_null($value)) {
                     return null;
@@ -27,7 +27,7 @@ class Vector extends \Pgvector\Vector implements Castable
                 return new Vector($value);
             }
 
-            public function set(Model $model, string $key, mixed $value, array $attributes): ?string
+            public function set(mixed $model, string $key, mixed $value, array $attributes): ?string
             {
                 if (is_null($value)) {
                     return null;
