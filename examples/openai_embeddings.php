@@ -12,12 +12,12 @@ pg_query($db, 'CREATE TABLE articles (id bigserial primary key, content text, em
 
 function fetchEmbeddings($input)
 {
+    $apiKey = getenv('OPENAI_API_KEY');
     $url = 'https://api.openai.com/v1/embeddings';
     $data = [
         'input' => $input,
         'model' => 'text-embedding-ada-002'
     ];
-    $apiKey = getenv('OPENAI_API_KEY');
     $opts = [
         'http' => [
             'method' => 'POST',
