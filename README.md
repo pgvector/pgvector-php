@@ -11,6 +11,10 @@ Follow the instructions for your database library:
 - [Laravel](#laravel)
 - [PHP](#php)
 
+Or check out an example:
+
+- [Embeddings](examples/openai_embeddings.php) with OpenAI
+
 ### Laravel
 
 Install the package
