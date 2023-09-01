@@ -79,6 +79,8 @@ Add an approximate index in a migration
 public function up()
 {
     DB::statement('CREATE INDEX my_index ON items USING ivfflat (embedding vector_l2_ops) WITH (lists = 100)');
+    // or
+    DB::statement('CREATE INDEX my_index ON items USING hnsw (embedding vector_l2_ops)');
 }
 
 public function down()
