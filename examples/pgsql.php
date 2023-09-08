@@ -8,7 +8,7 @@ $db = pg_connect('postgres://localhost/pgvector_php_test');
 
 pg_query($db, 'CREATE EXTENSION IF NOT EXISTS vector');
 pg_query($db, 'DROP TABLE IF EXISTS items');
-pg_query($db, 'CREATE TABLE items (id bigserial primary key, embedding vector(3))');
+pg_query($db, 'CREATE TABLE items (id bigserial PRIMARY KEY, embedding vector(3))');
 
 $embedding1 = new Vector([1, 1, 1]);
 $embedding2 = new Vector([2, 2, 2]);

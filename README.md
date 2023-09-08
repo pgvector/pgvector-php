@@ -14,7 +14,7 @@ Follow the instructions for your database library:
 Or check out some examples:
 
 - [Embeddings](examples/openai_embeddings.php) with OpenAI
-- [Recommendations](examples/disco/index.php) with Disco
+- [Recommendations](examples/disco/example.php) with Disco
 
 ### Laravel
 
