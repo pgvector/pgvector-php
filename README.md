@@ -11,7 +11,7 @@ Follow the instructions for your database library:
 - [Laravel](#laravel)
 - [PHP](#php)
 
-Or check out an example:
+Or check out some examples:
 
 - [Embeddings](examples/openai_embeddings.php) with OpenAI
 - [Recommendations](examples/disco/index.php) with Disco
