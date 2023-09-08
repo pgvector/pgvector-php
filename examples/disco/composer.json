@@ -1,0 +1,12 @@
+{
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../.."
+        }
+    ],
+    "require": {
+        "ankane/disco": "^0.1.1",
+        "ankane/pgvector": "dev-master"
+    }
+}
