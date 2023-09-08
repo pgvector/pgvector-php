@@ -4,7 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Pgvector\Vector;
 
-$db = pg_connect('postgres://localhost/pgvector_php_test');
+$db = pg_connect('postgres://localhost/pgvector_example');
 
 pg_query($db, 'CREATE EXTENSION IF NOT EXISTS vector');
 pg_query($db, 'DROP TABLE IF EXISTS users');

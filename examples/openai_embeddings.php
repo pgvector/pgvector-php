@@ -4,11 +4,11 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Pgvector\Vector;
 
-$db = pg_connect('postgres://localhost/pgvector_php_test');
+$db = pg_connect('postgres://localhost/pgvector_example');
 
 pg_query($db, 'CREATE EXTENSION IF NOT EXISTS vector');
-pg_query($db, 'DROP TABLE IF EXISTS articles');
-pg_query($db, 'CREATE TABLE articles (id bigserial PRIMARY KEY, content text, embedding vector(1536))');
+pg_query($db, 'DROP TABLE IF EXISTS documents');
+pg_query($db, 'CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding vector(1536))');
 
 function fetchEmbeddings($input)
 {
@@ -38,11 +38,11 @@ $input = [
 $embeddings = fetchEmbeddings($input);
 
 foreach ($input as $i => $content) {
-    pg_query_params($db, 'INSERT INTO articles (content, embedding) VALUES ($1, $2)', [$content, new Vector($embeddings[$i])]);
+    pg_query_params($db, 'INSERT INTO documents (content, embedding) VALUES ($1, $2)', [$content, new Vector($embeddings[$i])]);
 }
 
-$articleId = 2;
-$result = pg_query_params($db, 'SELECT * FROM articles WHERE id != $1 ORDER BY embedding <=> (SELECT embedding FROM articles WHERE id = $1) LIMIT 5', [$articleId]);
+$documentId = 2;
+$result = pg_query_params($db, 'SELECT * FROM documents WHERE id != $1 ORDER BY embedding <=> (SELECT embedding FROM documents WHERE id = $1) LIMIT 5', [$documentId]);
 while ($row = pg_fetch_array($result)) {
     echo $row['content'] . "\n";
 }
