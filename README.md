@@ -24,7 +24,7 @@ Install the package
 composer require ankane/pgvector
 ```
 
-Create the `vector` extension
+Enable the extension
 
 ```sh
 php artisan vendor:publish --tag="pgvector-migrations"
@@ -93,6 +93,12 @@ public function down()
 Use `vector_ip_ops` for inner product and `vector_cosine_ops` for cosine distance
 
 ### PHP
+
+Enable the extension
+
+```php
+pg_query($db, 'CREATE EXTENSION IF NOT EXISTS vector');
+```
 
 Create a table
 
