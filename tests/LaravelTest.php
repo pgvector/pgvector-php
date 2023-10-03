@@ -106,6 +106,14 @@ final class LaravelTest extends TestCase
         $item->nearestNeighbors('factors', Distance::L2);
     }
 
+    public function testInvalidDistance()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid distance');
+
+        Item::query()->nearestNeighbors('embedding', [1, 2, 3], 4);
+    }
+
     public function testCast()
     {
         Item::create(['id' => 1, 'embedding' => [1, 2, 3]]);
