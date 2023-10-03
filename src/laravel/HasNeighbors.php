@@ -23,17 +23,21 @@ trait HasNeighbors
         }
         $wrapped = $query->getGrammar()->wrap($column);
         $order = "$wrapped $op ?";
-        $vector = new Vector($value);
-
-        $neighborDistance = $order;
-        if ($distance == Distance::MaxInnerProduct) {
-            $neighborDistance = "($order) * -1";
-        }
+        $neighborDistance = $distance == Distance::MaxInnerProduct ? "($order) * -1" : $order;
+        $vector = $value instanceof Vector ? $value : new Vector($value);
 
         $query->select()
             ->selectRaw("$neighborDistance AS neighbor_distance", [$vector])
             ->withCasts(['neighbor_distance' => 'double'])
             ->whereNotNull($column)
             ->orderByRaw($order, $vector);
+    }
+
+    // TODO rename
+    public function instanceNearestNeighbors(string $column, int $distance): Builder
+    {
+        $id = $this->getKey();
+        $value = $this->getAttributeValue($column);
+        return static::whereKeyNot($id)->nearestNeighbors($column, $value, $distance);
     }
 }

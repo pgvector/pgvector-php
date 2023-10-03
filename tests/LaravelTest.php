@@ -87,6 +87,15 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([6, 4, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
+    public function testInstance()
+    {
+        $this->createItems();
+        $item = Item::find(1);
+        $neighbors = $item->instanceNearestNeighbors('embedding', Distance::L2Distance)->take(5)->get();
+        $this->assertEquals([3, 2], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
     public function testCast()
     {
         Item::create(['id' => 1, 'embedding' => [1, 2, 3]]);
