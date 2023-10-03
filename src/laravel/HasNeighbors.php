@@ -38,7 +38,8 @@ trait HasNeighbors
     {
         $id = $this->getKey();
         if (!array_key_exists($column, $this->attributes)) {
-            throw new MissingAttributeException($this, $column);
+            // TODO use MissingAttributeException when Laravel 9 no longer supported
+            throw new \OutOfBoundsException('Missing attribute');
         }
         $value = $this->getAttributeValue($column);
         return static::whereKeyNot($id)->nearestNeighbors($column, $value, $distance);

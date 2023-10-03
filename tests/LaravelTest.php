@@ -98,8 +98,8 @@ final class LaravelTest extends TestCase
 
     public function testMissingAttribute()
     {
-        $this->expectException(\Illuminate\Database\Eloquent\MissingAttributeException::class);
-        $this->expectExceptionMessage('The attribute [factors] either does not exist or was not retrieved for model [Item].');
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage('Missing attribute');
 
         $this->createItems();
         $item = Item::find(1);
