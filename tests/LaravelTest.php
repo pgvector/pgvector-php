@@ -33,12 +33,8 @@ class Distance
     public const CosineDistance = 2;
 }
 
-class Item extends Model
+trait hasNeighbors
 {
-    public $timestamps = false;
-    protected $fillable = ['id', 'embedding'];
-    protected $casts = ['embedding' => Vector::class];
-
     public function scopeNearestNeighbors(Builder $query, string $column, mixed $value, int $distance): void
     {
         switch ($distance) {
@@ -69,6 +65,15 @@ class Item extends Model
             ->whereNotNull($column)
             ->orderByRaw($order, $vector);
     }
+}
+
+class Item extends Model
+{
+    use hasNeighbors;
+
+    public $timestamps = false;
+    protected $fillable = ['id', 'embedding'];
+    protected $casts = ['embedding' => Vector::class];
 }
 
 final class LaravelTest extends TestCase
@@ -107,7 +112,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([0, sqrt(3), 1], $distances->toArray(), 0.00001);
     }
 
-    public function testNearestNeighborsL2Distance()
+    public function testScopeL2Distance()
     {
         $this->createItems();
         $neighbors = Item::nearestNeighbors('embedding', [1, 1, 1], Distance::L2Distance)->take(5)->get();
@@ -115,7 +120,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([0, 1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
-    public function testNearestNeighborsMaxInnerProduct()
+    public function testScopeMaxInnerProduct()
     {
         $this->createItems();
         $neighbors = Item::nearestNeighbors('embedding', [1, 1, 1], Distance::MaxInnerProduct)->take(5)->get();
