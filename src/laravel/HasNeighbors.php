@@ -26,6 +26,7 @@ trait HasNeighbors
         $neighborDistance = $distance == Distance::InnerProduct ? "($order) * -1" : $order;
         $vector = $value instanceof Vector ? $value : new Vector($value);
 
+        // ideally preserve existing select, but does not appear to be a way to get columns
         $query->select()
             ->selectRaw("$neighborDistance AS neighbor_distance", [$vector])
             ->withCasts(['neighbor_distance' => 'double'])
