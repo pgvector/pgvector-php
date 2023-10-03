@@ -108,8 +108,7 @@ final class LaravelTest extends TestCase
 
     public function testInvalidDistance()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid distance');
+        $this->expectException(TypeError::class);
 
         Item::query()->nearestNeighbors('embedding', [1, 2, 3], 4);
     }

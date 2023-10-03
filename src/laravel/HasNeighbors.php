@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait HasNeighbors
 {
-    public function scopeNearestNeighbors(Builder $query, string $column, mixed $value, int $distance): void
+    public function scopeNearestNeighbors(Builder $query, string $column, mixed $value, Distance $distance): void
     {
         switch ($distance) {
             case Distance::L2:
@@ -34,7 +34,7 @@ trait HasNeighbors
             ->orderByRaw($order, [$vector]);
     }
 
-    public function nearestNeighbors(string $column, int $distance): Builder
+    public function nearestNeighbors(string $column, Distance $distance): Builder
     {
         $id = $this->getKey();
         if (!array_key_exists($column, $this->attributes)) {
