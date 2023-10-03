@@ -46,6 +46,8 @@ use Pgvector\Laravel\Vector;
 
 class Item extends Model
 {
+    use HasNeighbors;
+
     protected $casts = ['embedding' => Vector::class];
 }
 ```
@@ -58,20 +60,26 @@ $item->embedding = [1, 2, 3];
 $item->save();
 ```
 
-Get the nearest neighbors
+Get the nearest neighbors to a record
 
 ```php
-use Pgvector\Laravel\Vector;
+use Pgvector\Laravel\Distance;
 
-$embedding = new Vector([1, 2, 3]);
-$neighbors = Item::orderByRaw('embedding <-> ?', [$embedding])->take(5)->get();
+$neighbors = $item->nearestNeighbors('embedding', Distance::L2)->take(5)->get();
+```
+
+Also supports `InnerProduct` and `Cosine` distance
+
+Get the nearest neighbors to a vector
+
+```php
+$neighbors = Item::query()->nearestNeighbors('embedding', [1, 2, 3], Distance::L2)->take(5)->get();
 ```
 
 Get the distances
 
 ```php
-$embedding = new Vector([1, 2, 3]);
-$distances = Item::selectRaw('embedding <-> ? AS distance', [$embedding])->pluck('distance');
+$neighbors->pluck('neighbor_distance');
 ```
 
 Add an approximate index in a migration
