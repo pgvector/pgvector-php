@@ -1,3 +1,7 @@
+## 0.1.3 (unreleased)
+
+- Added `HasNeighbors` trait for Laravel
+
 ## 0.1.2 (2023-04-11)
 
 - Fixed cast for Laraval 9

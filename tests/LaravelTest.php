@@ -3,8 +3,9 @@
 use PHPUnit\Framework\TestCase;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Pgvector\Laravel\Distance;
+use Pgvector\Laravel\HasNeighbors;
 use Pgvector\Laravel\Vector;
 
 $capsule = new Capsule();
@@ -25,51 +26,9 @@ Capsule::schema()->create('items', function ($table) {
     $table->vector('embedding', 3)->nullable();
 });
 
-// TODO use enum when PHP 8.0 reaches EOL
-class Distance
-{
-    public const L2Distance = 0;
-    public const MaxInnerProduct = 1;
-    public const CosineDistance = 2;
-}
-
-trait hasNeighbors
-{
-    public function scopeNearestNeighbors(Builder $query, string $column, mixed $value, int $distance): void
-    {
-        switch ($distance) {
-            case Distance::L2Distance:
-                $op = '<->';
-                break;
-            case Distance::MaxInnerProduct:
-                $op = '<#>';
-                break;
-            case Distance::CosineDistance:
-                $op = '<=>';
-                break;
-            default:
-                throw new \InvalidArgumentException("Invalid distance");
-        }
-        $wrapped = $query->getGrammar()->wrap($column);
-        $order = "$wrapped $op ?";
-        $vector = new Vector($value);
-
-        $neighborDistance = $order;
-        if ($distance == Distance::MaxInnerProduct) {
-            $neighborDistance = "($order) * -1";
-        }
-
-        $query->select()
-            ->selectRaw("$neighborDistance AS neighbor_distance", [$vector])
-            ->withCasts(['neighbor_distance' => 'double'])
-            ->whereNotNull($column)
-            ->orderByRaw($order, $vector);
-    }
-}
-
 class Item extends Model
 {
-    use hasNeighbors;
+    use HasNeighbors;
 
     public $timestamps = false;
     protected $fillable = ['id', 'embedding'];
