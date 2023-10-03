@@ -9,13 +9,13 @@ trait HasNeighbors
     public function scopeNearestNeighbors(Builder $query, string $column, mixed $value, int $distance): void
     {
         switch ($distance) {
-            case Distance::L2Distance:
+            case Distance::L2:
                 $op = '<->';
                 break;
-            case Distance::MaxInnerProduct:
+            case Distance::InnerProduct:
                 $op = '<#>';
                 break;
-            case Distance::CosineDistance:
+            case Distance::Cosine:
                 $op = '<=>';
                 break;
             default:
@@ -23,7 +23,7 @@ trait HasNeighbors
         }
         $wrapped = $query->getGrammar()->wrap($column);
         $order = "$wrapped $op ?";
-        $neighborDistance = $distance == Distance::MaxInnerProduct ? "($order) * -1" : $order;
+        $neighborDistance = $distance == Distance::InnerProduct ? "($order) * -1" : $order;
         $vector = $value instanceof Vector ? $value : new Vector($value);
 
         $query->select()
