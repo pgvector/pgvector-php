@@ -33,8 +33,7 @@ trait HasNeighbors
             ->orderByRaw($order, $vector);
     }
 
-    // TODO rename
-    public function instanceNearestNeighbors(string $column, int $distance): Builder
+    public function nearestNeighbors(string $column, int $distance): Builder
     {
         $id = $this->getKey();
         $value = $this->getAttributeValue($column);
