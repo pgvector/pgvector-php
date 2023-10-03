@@ -3,7 +3,6 @@
 namespace Pgvector\Laravel;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\MissingAttributeException;
 
 trait HasNeighbors
 {
