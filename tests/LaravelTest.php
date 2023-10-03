@@ -55,7 +55,19 @@ class Item extends Model
                 throw new \InvalidArgumentException("Invalid distance");
         }
         $wrapped = $query->getGrammar()->wrap($column);
-        $query->orderByRaw("$wrapped $op ?", new Vector($value));
+        $order = "$wrapped $op ?";
+        $vector = new Vector($value);
+
+        $neighborDistance = $order;
+        if ($distance == Distance::MaxInnerProduct) {
+            $neighborDistance = "($order) * -1";
+        }
+
+        $query->select()
+            ->selectRaw("$neighborDistance AS neighbor_distance", [$vector])
+            ->withCasts(['neighbor_distance' => 'double'])
+            ->whereNotNull($column)
+            ->orderByRaw($order, $vector);
     }
 }
 
@@ -95,11 +107,20 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([0, sqrt(3), 1], $distances->toArray(), 0.00001);
     }
 
-    public function testNearestNeighbors()
+    public function testNearestNeighborsL2Distance()
     {
         $this->createItems();
         $neighbors = Item::nearestNeighbors('embedding', [1, 1, 1], Distance::L2Distance)->take(5)->get();
         $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([0, 1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
+    public function testNearestNeighborsMaxInnerProduct()
+    {
+        $this->createItems();
+        $neighbors = Item::nearestNeighbors('embedding', [1, 1, 1], Distance::MaxInnerProduct)->take(5)->get();
+        $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([6, 4, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
     public function testCast()
