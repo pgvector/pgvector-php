@@ -31,7 +31,7 @@ trait HasNeighbors
             ->selectRaw("$neighborDistance AS neighbor_distance", [$vector])
             ->withCasts(['neighbor_distance' => 'double'])
             ->whereNotNull($column)
-            ->orderByRaw($order, $vector);
+            ->orderByRaw($order, [$vector]);
     }
 
     public function nearestNeighbors(string $column, int $distance): Builder
