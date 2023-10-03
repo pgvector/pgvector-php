@@ -3,6 +3,7 @@
 namespace Pgvector\Laravel;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\MissingAttributeException;
 
 trait HasNeighbors
 {
@@ -36,6 +37,9 @@ trait HasNeighbors
     public function nearestNeighbors(string $column, int $distance): Builder
     {
         $id = $this->getKey();
+        if (!array_key_exists($column, $this->attributes)) {
+            throw new MissingAttributeException($this, $column);
+        }
         $value = $this->getAttributeValue($column);
         return static::whereKeyNot($id)->nearestNeighbors($column, $value, $distance);
     }

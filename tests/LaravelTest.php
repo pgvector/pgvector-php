@@ -96,6 +96,16 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
+    public function testMissingAttribute()
+    {
+        $this->expectException(\Illuminate\Database\Eloquent\MissingAttributeException::class);
+        $this->expectExceptionMessage('The attribute [factors] either does not exist or was not retrieved for model [Item].');
+
+        $this->createItems();
+        $item = Item::find(1);
+        $item->nearestNeighbors('factors', Distance::L2);
+    }
+
     public function testCast()
     {
         Item::create(['id' => 1, 'embedding' => [1, 2, 3]]);
