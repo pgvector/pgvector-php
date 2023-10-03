@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Pgvector\Laravel\Vector;
 
@@ -24,11 +25,38 @@ Capsule::schema()->create('items', function ($table) {
     $table->vector('embedding', 3)->nullable();
 });
 
+// TODO use enum when PHP 8.0 reaches EOL
+class Distance
+{
+    public const L2Distance = 0;
+    public const MaxInnerProduct = 1;
+    public const CosineDistance = 2;
+}
+
 class Item extends Model
 {
     public $timestamps = false;
     protected $fillable = ['id', 'embedding'];
     protected $casts = ['embedding' => Vector::class];
+
+    public function scopeNearestNeighbors(Builder $query, string $column, mixed $value, int $distance): void
+    {
+        switch ($distance) {
+            case Distance::L2Distance:
+                $op = '<->';
+                break;
+            case Distance::MaxInnerProduct:
+                $op = '<#>';
+                break;
+            case Distance::CosineDistance:
+                $op = '<=>';
+                break;
+            default:
+                throw new \InvalidArgumentException("Invalid distance");
+        }
+        $wrapped = $query->getGrammar()->wrap($column);
+        $query->orderByRaw("$wrapped $op ?", new Vector($value));
+    }
 }
 
 final class LaravelTest extends TestCase
@@ -65,6 +93,13 @@ final class LaravelTest extends TestCase
         $this->createItems();
         $distances = Item::selectRaw('embedding <-> ? AS distance', [new Vector([1, 1, 1])])->pluck('distance');
         $this->assertEqualsWithDelta([0, sqrt(3), 1], $distances->toArray(), 0.00001);
+    }
+
+    public function testNearestNeighbors()
+    {
+        $this->createItems();
+        $neighbors = Item::nearestNeighbors('embedding', [1, 1, 1], Distance::L2Distance)->take(5)->get();
+        $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
     }
 
     public function testCast()
