@@ -22,4 +22,6 @@ while ($row = pg_fetch_array($result)) {
 }
 pg_free_result($result);
 
+pg_query($db, 'CREATE INDEX ON items USING hnsw (embedding vector_l2_ops)');
+
 pg_close($db);

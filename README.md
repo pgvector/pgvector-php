@@ -130,6 +130,14 @@ $embedding = new Vector([1, 2, 3]);
 $result = pg_query_params($db, 'SELECT * FROM items ORDER BY embedding <-> $1 LIMIT 5', [$embedding]);
 ```
 
+Add an approximate index
+
+```php
+pg_query($db, 'CREATE INDEX ON items USING ivfflat (embedding vector_l2_ops) WITH (lists = 100)');
+// or
+pg_query($db, 'CREATE INDEX ON items USING hnsw (embedding vector_l2_ops)');
+```
+
 See a [full example](examples/pgsql.php)
 
 ## History
