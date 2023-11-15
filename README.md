@@ -140,6 +140,12 @@ pg_query($db, 'CREATE INDEX ON items USING hnsw (embedding vector_l2_ops)');
 
 See a [full example](examples/pgsql.php)
 
+## Upgrading
+
+### 0.1.4
+
+The package name was changed from `ankane/pgvector` to `pgvector/pgvector`. Update it in `composer.json` to remove the message.
+
 ## History
 
 View the [changelog](https://github.com/pgvector/pgvector-php/blob/master/CHANGELOG.md)
