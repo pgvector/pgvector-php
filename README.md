@@ -21,7 +21,7 @@ Or check out some examples:
 Install the package
 
 ```sh
-composer require ankane/pgvector
+composer require pgvector/pgvector
 ```
 
 Enable the extension

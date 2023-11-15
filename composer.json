@@ -1,5 +1,5 @@
 {
-    "name": "ankane/pgvector",
+    "name": "pgvector/pgvector",
     "description": "pgvector support for PHP",
     "license": "MIT",
     "support": {

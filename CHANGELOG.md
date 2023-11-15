@@ -1,3 +1,7 @@
+## 0.1.4 (unreleased)
+
+- Moved package to `pgvector` namespace
+
 ## 0.1.3 (2023-10-03)
 
 - Added `HasNeighbors` trait for Laravel
