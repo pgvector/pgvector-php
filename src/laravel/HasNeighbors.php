@@ -6,21 +6,14 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait HasNeighbors
 {
-    public function scopeNearestNeighbors(Builder $query, string $column, mixed $value, int $distance): void
+    public function scopeNearestNeighbors(Builder $query, string $column, mixed $value, Distance $distance): void
     {
-        switch ($distance) {
-            case Distance::L2:
-                $op = '<->';
-                break;
-            case Distance::InnerProduct:
-                $op = '<#>';
-                break;
-            case Distance::Cosine:
-                $op = '<=>';
-                break;
-            default:
-                throw new \InvalidArgumentException("Invalid distance");
-        }
+        $op = match ($distance) {
+            Distance::L2 => '<->',
+            Distance::InnerProduct => '<#>',
+            Distance::Cosine => '<=>',
+        };
+
         $wrapped = $query->getGrammar()->wrap($column);
         $order = "$wrapped $op ?";
         $neighborDistance = $distance == Distance::InnerProduct ? "($order) * -1" : $order;

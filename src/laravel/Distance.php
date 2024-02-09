@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pgvector\Laravel;
 
-// TODO use enum when PHP 8.0 reaches EOL
-class Distance
+enum Distance: int
 {
-    public const L2 = 0;
-    public const InnerProduct = 1;
-    public const Cosine = 2;
+    case L2 = 0;
+    case InnerProduct = 1;
+    case Cosine = 2;
 }
