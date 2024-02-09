@@ -10,7 +10,7 @@ use Illuminate\Database\Schema\Grammars\PostgresGrammar;
 
 class Schema
 {
-    public static function register()
+    public static function register(): void
     {
         PostgresGrammar::macro('typeVector', function (ColumnDefinition $column) {
             if ($column->get('dimensions')) {

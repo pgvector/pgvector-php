@@ -6,7 +6,7 @@ namespace Pgvector;
 
 class Vector
 {
-    protected $value;
+    protected array $value;
 
     public function __construct($value)
     {
@@ -35,7 +35,7 @@ class Vector
         return json_encode($this->value, JSON_THROW_ON_ERROR, 1);
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->value;
     }
