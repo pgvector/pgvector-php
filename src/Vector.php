@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pgvector;
 
+use JsonException;
+
 class Vector
 {
     protected array $value;
@@ -30,6 +32,9 @@ class Vector
         $this->value = $value;
     }
 
+    /**
+     * @throws JsonException
+     */
     public function __toString()
     {
         return json_encode($this->value, JSON_THROW_ON_ERROR, 1);
