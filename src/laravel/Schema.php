@@ -12,16 +12,16 @@ class Schema
 {
     public static function register(): void
     {
-        PostgresGrammar::macro('typeVector', function (ColumnDefinition $column) {
-            if ($column->get('dimensions')) {
-                return 'vector(' . intval($column->get('dimensions')) . ')';
-            } else {
-                return 'vector';
-            }
-        });
+        PostgresGrammar::macro(
+            'typeVector',
+            fn (ColumnDefinition $column) => $column->get('dimensions') === null
+                ? 'vector'
+                : 'vector(' . intval($column->get('dimensions')) . ')',
+        );
 
-        Blueprint::macro('vector', function ($column, $dimensions = null) {
-            return $this->addColumn('vector', $column, compact('dimensions'));
-        });
+        Blueprint::macro(
+            'vector',
+            fn ($column, $dimensions = null) => $this->addColumn('vector', $column, compact('dimensions')),
+        );
     }
 }
