@@ -1,3 +1,7 @@
+## 0.2.0 (unreleased)
+
+- Changed `Distance` to enum
+
 ## 0.1.4 (2023-11-14)
 
 - Moved package to `pgvector` namespace
