@@ -6,8 +6,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php: 8.2
-          - php: "8.0"
+          - php: 8.3
+          - php: "8.1"
             composer: --prefer-lowest
     runs-on: ubuntu-latest
     steps:
