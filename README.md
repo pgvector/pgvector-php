@@ -2,7 +2,7 @@
 
 [pgvector](https://github.com/pgvector/pgvector) support for PHP
 
-[![Build Status](https://github.com/pgvector/pgvector-php/workflows/build/badge.svg?branch=master)](https://github.com/pgvector/pgvector-php/actions)
+[![Build Status](https://github.com/pgvector/pgvector-php/actions/workflows/build.yml/badge.svg)](https://github.com/pgvector/pgvector-php/actions)
 
 ## Getting Started
 
