@@ -48,12 +48,20 @@ final class PhpTest extends TestCase
         $this->assertEquals([1, 1, 1], $embedding->toArray());
     }
 
-    public function testInvalidObject()
+    public function testInvalidInteger()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected array');
 
         new Vector(1);
+    }
+
+    public function testInvalidObject()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected array');
+
+        new Vector(['a' => 1]);
     }
 
     public function testInvalidString()
