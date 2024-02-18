@@ -20,8 +20,12 @@ class Vector
             }
         }
 
-        if (!is_array($value) || !array_is_list($value)) {
+        if (!is_array($value)) {
             throw new \InvalidArgumentException("Expected array");
+        }
+
+        if (!array_is_list($value)) {
+            throw new \InvalidArgumentException("Expected array to be a list");
         }
 
         $this->value = $value;

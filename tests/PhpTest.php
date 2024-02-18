@@ -56,10 +56,10 @@ final class PhpTest extends TestCase
         new Vector(1);
     }
 
-    public function testInvalidObject()
+    public function testInvalidArray()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Expected array');
+        $this->expectExceptionMessage('Expected array to be a list');
 
         new Vector(['a' => 1]);
     }
