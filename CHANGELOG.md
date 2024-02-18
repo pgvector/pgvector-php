@@ -2,6 +2,7 @@
 
 - Changed `Distance` to enum
 - Dropped support for PHP < 8.1
+- Dropped support for Laravel < 10
 
 ## 0.1.4 (2023-11-14)
 

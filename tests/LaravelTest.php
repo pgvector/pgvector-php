@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Database\Eloquent\MissingAttributeException;
 use Illuminate\Database\Eloquent\Model;
 use Pgvector\Laravel\Distance;
 use Pgvector\Laravel\HasNeighbors;
@@ -98,8 +99,8 @@ final class LaravelTest extends TestCase
 
     public function testMissingAttribute()
     {
-        $this->expectException(OutOfBoundsException::class);
-        $this->expectExceptionMessage('Missing attribute');
+        $this->expectException(MissingAttributeException::class);
+        $this->expectExceptionMessage('The attribute [factors] either does not exist or was not retrieved for model [Item].');
 
         $this->createItems();
         $item = Item::find(1);
