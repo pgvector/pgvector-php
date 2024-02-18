@@ -69,7 +69,7 @@ final class PhpTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid text representation');
 
-        new Vector("true");
+        new Vector('{"a": 1}');
     }
 
     public function testInvalidJson()

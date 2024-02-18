@@ -15,17 +15,17 @@ class Vector
                 // do nothing
             }
 
-            if (!is_array($value)) {
+            if (!is_array($value) || !array_is_list($value)) {
                 throw new \InvalidArgumentException("Invalid text representation");
             }
-        }
+        } else {
+            if (!is_array($value)) {
+                throw new \InvalidArgumentException("Expected array");
+            }
 
-        if (!is_array($value)) {
-            throw new \InvalidArgumentException("Expected array");
-        }
-
-        if (!array_is_list($value)) {
-            throw new \InvalidArgumentException("Expected array to be a list");
+            if (!array_is_list($value)) {
+                throw new \InvalidArgumentException("Expected array to be a list");
+            }
         }
 
         $this->value = $value;
