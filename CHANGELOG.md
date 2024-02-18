@@ -1,6 +1,7 @@
 ## 0.2.0 (unreleased)
 
 - Changed `Distance` to enum
+- Dropped support for PHP < 8.1
 
 ## 0.1.4 (2023-11-14)
 
