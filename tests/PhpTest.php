@@ -79,4 +79,10 @@ final class PhpTest extends TestCase
 
         new Vector("tru");
     }
+
+    public function testEmptyArray()
+    {
+        $embedding = new Vector([]);
+        $this->assertEquals('[]', (string) $embedding);
+    }
 }
