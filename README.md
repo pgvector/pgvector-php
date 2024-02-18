@@ -87,9 +87,9 @@ Add an approximate index in a migration
 ```php
 public function up()
 {
-    DB::statement('CREATE INDEX my_index ON items USING ivfflat (embedding vector_l2_ops) WITH (lists = 100)');
-    // or
     DB::statement('CREATE INDEX my_index ON items USING hnsw (embedding vector_l2_ops)');
+    // or
+    DB::statement('CREATE INDEX my_index ON items USING ivfflat (embedding vector_l2_ops) WITH (lists = 100)');
 }
 
 public function down()
@@ -133,9 +133,9 @@ $result = pg_query_params($db, 'SELECT * FROM items ORDER BY embedding <-> $1 LI
 Add an approximate index
 
 ```php
-pg_query($db, 'CREATE INDEX ON items USING ivfflat (embedding vector_l2_ops) WITH (lists = 100)');
-// or
 pg_query($db, 'CREATE INDEX ON items USING hnsw (embedding vector_l2_ops)');
+// or
+pg_query($db, 'CREATE INDEX ON items USING ivfflat (embedding vector_l2_ops) WITH (lists = 100)');
 ```
 
 See a [full example](examples/pgsql.php)
