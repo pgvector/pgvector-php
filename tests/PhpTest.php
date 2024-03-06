@@ -33,6 +33,9 @@ final class PhpTest extends TestCase
         $this->assertEquals(['[1,1,1]', '[1,1,2]', '[2,2,2]'], $embeddings);
         $this->assertEquals([1, 1, 1], (new Vector($embeddings[0]))->toArray());
 
+        $rows = [$embedding1, $embedding2, $embedding3];
+        pg_copy_from($db, 'items (embedding)', $rows);
+
         pg_close($db);
     }
 
