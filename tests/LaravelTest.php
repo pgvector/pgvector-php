@@ -97,6 +97,15 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
+    public function testInstanceL1()
+    {
+        $this->createItems();
+        $item = Item::find(1);
+        $neighbors = $item->nearestNeighbors('embedding', Distance::L1)->take(5)->get();
+        $this->assertEquals([3, 2], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([1, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
     public function testMissingAttribute()
     {
         $this->expectException(MissingAttributeException::class);

@@ -19,6 +19,9 @@ trait HasNeighbors
             case Distance::Cosine:
                 $op = '<=>';
                 break;
+            case Distance::L1:
+                $op = '<+>';
+                break;
             default:
                 throw new \InvalidArgumentException("Invalid distance");
         }

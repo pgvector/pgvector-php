@@ -7,4 +7,5 @@ enum Distance
     case L2;
     case InnerProduct;
     case Cosine;
+    case L1;
 }
