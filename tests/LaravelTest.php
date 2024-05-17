@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Pgvector\Laravel\Distance;
 use Pgvector\Laravel\HasNeighbors;
 use Pgvector\Laravel\Vector;
+use Pgvector\Laravel\HalfVector;
 
 $capsule = new Capsule();
 $capsule->addConnection([
@@ -35,8 +36,8 @@ class Item extends Model
     use HasNeighbors;
 
     public $timestamps = false;
-    protected $fillable = ['id', 'embedding', 'binary_embedding'];
-    protected $casts = ['embedding' => Vector::class];
+    protected $fillable = ['id', 'embedding', 'half_embedding', 'binary_embedding'];
+    protected $casts = ['embedding' => Vector::class, 'half_embedding' => HalfVector::class];
 }
 
 final class LaravelTest extends TestCase
@@ -109,6 +110,48 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([1, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
+    public function testHalfvecL2Distance()
+    {
+        $this->createItems('half_embedding');
+        $neighbors = Item::orderByRaw('half_embedding <-> ?', [new HalfVector([1, 1, 1])])->take(5)->get();
+        $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
+        $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], array_map(fn ($v) => $v->toArray(), $neighbors->pluck('half_embedding')->toArray()));
+    }
+
+    public function testHalfvecScopeL2Distance()
+    {
+        $this->createItems('half_embedding');
+        $neighbors = Item::query()->nearestNeighbors('half_embedding', [1, 1, 1], Distance::L2)->take(5)->get();
+        $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([0, 1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
+    public function testHalfvecScopeMaxInnerProduct()
+    {
+        $this->createItems('half_embedding');
+        $neighbors = Item::query()->nearestNeighbors('half_embedding', [1, 1, 1], Distance::InnerProduct)->take(5)->get();
+        $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([6, 4, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
+    public function testHalfvecInstance()
+    {
+        $this->createItems('half_embedding');
+        $item = Item::find(1);
+        $neighbors = $item->nearestNeighbors('half_embedding', Distance::L2)->take(5)->get();
+        $this->assertEquals([3, 2], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
+    public function testHalfvecInstanceL1()
+    {
+        $this->createItems('half_embedding');
+        $item = Item::find(1);
+        $neighbors = $item->nearestNeighbors('half_embedding', Distance::L1)->take(5)->get();
+        $this->assertEquals([3, 2], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([1, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
     public function testBitHammingDistance()
     {
         Item::create(['id' => 1, 'binary_embedding' => '000']);
@@ -160,10 +203,10 @@ final class LaravelTest extends TestCase
         $this->assertNull($item->embedding);
     }
 
-    private function createItems()
+    private function createItems($attribute = 'embedding')
     {
         foreach ([[1, 1, 1], [2, 2, 2], [1, 1, 2]] as $i => $v) {
-            Item::create(['id' => $i + 1, 'embedding' => $v]);
+            Item::create(['id' => $i + 1, $attribute => $v]);
         }
     }
 }
