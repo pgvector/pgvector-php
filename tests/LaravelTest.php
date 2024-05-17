@@ -35,7 +35,7 @@ class Item extends Model
     use HasNeighbors;
 
     public $timestamps = false;
-    protected $fillable = ['id', 'embedding'];
+    protected $fillable = ['id', 'embedding', 'binary_embedding'];
     protected $casts = ['embedding' => Vector::class];
 }
 
@@ -107,6 +107,26 @@ final class LaravelTest extends TestCase
         $neighbors = $item->nearestNeighbors('embedding', Distance::L1)->take(5)->get();
         $this->assertEquals([3, 2], $neighbors->pluck('id')->toArray());
         $this->assertEqualsWithDelta([1, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
+    public function testBitHammingDistance()
+    {
+        Item::create(['id' => 1, 'binary_embedding' => '000']);
+        Item::create(['id' => 2, 'binary_embedding' => '101']);
+        Item::create(['id' => 3, 'binary_embedding' => '111']);
+        $neighbors = Item::query()->nearestNeighbors('binary_embedding', '101', Distance::Hamming)->take(5)->get();
+        $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([0, 1, 2], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
+    public function testBitJaccardDistance()
+    {
+        Item::create(['id' => 1, 'binary_embedding' => '000']);
+        Item::create(['id' => 2, 'binary_embedding' => '101']);
+        Item::create(['id' => 3, 'binary_embedding' => '111']);
+        $neighbors = Item::query()->nearestNeighbors('binary_embedding', '101', Distance::Jaccard)->take(5)->get();
+        $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([0, 1/3, 1], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
     public function testMissingAttribute()
