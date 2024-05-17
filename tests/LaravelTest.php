@@ -25,6 +25,9 @@ Capsule::schema()->dropIfExists('items');
 Capsule::schema()->create('items', function ($table) {
     $table->increments('id');
     $table->vector('embedding', 3)->nullable();
+    $table->halfvec('half_embedding', 3)->nullable();
+    $table->bit('binary_embedding', 3)->nullable();
+    $table->sparsevec('sparse_embedding', 3)->nullable();
 });
 
 class Item extends Model
