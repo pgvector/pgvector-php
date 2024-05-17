@@ -47,7 +47,7 @@ final class LaravelTest extends TestCase
         Item::truncate();
     }
 
-    public function testL2Distance()
+    public function testVectorL2Distance()
     {
         $this->createItems();
         $neighbors = Item::orderByRaw('embedding <-> ?', [new Vector([1, 1, 1])])->take(5)->get();
@@ -55,14 +55,14 @@ final class LaravelTest extends TestCase
         $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], array_map(fn ($v) => $v->toArray(), $neighbors->pluck('embedding')->toArray()));
     }
 
-    public function testMaxInnerProduct()
+    public function testVectorMaxInnerProduct()
     {
         $this->createItems();
         $neighbors = Item::orderByRaw('embedding <#> ?', [new Vector([1, 1, 1])])->take(5)->get();
         $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
     }
 
-    public function testCosineDistance()
+    public function testVectorCosineDistance()
     {
         $this->createItems();
         $neighbors = Item::orderByRaw('embedding <=> ?', [new Vector([1, 1, 1])])->take(5)->get();
@@ -76,7 +76,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([0, sqrt(3), 1], $distances->toArray(), 0.00001);
     }
 
-    public function testScopeL2Distance()
+    public function testVectorScopeL2Distance()
     {
         $this->createItems();
         $neighbors = Item::query()->nearestNeighbors('embedding', [1, 1, 1], Distance::L2)->take(5)->get();
@@ -84,7 +84,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([0, 1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
-    public function testScopeMaxInnerProduct()
+    public function testVectorScopeMaxInnerProduct()
     {
         $this->createItems();
         $neighbors = Item::query()->nearestNeighbors('embedding', [1, 1, 1], Distance::InnerProduct)->take(5)->get();
@@ -92,7 +92,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([6, 4, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
-    public function testInstance()
+    public function testVectorInstance()
     {
         $this->createItems();
         $item = Item::find(1);
@@ -101,7 +101,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
-    public function testInstanceL1()
+    public function testVectorInstanceL1()
     {
         $this->createItems();
         $item = Item::find(1);
