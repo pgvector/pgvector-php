@@ -8,4 +8,6 @@ enum Distance
     case InnerProduct;
     case Cosine;
     case L1;
+    case Hamming;
+    case Jaccard;
 }

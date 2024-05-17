@@ -22,13 +22,19 @@ trait HasNeighbors
             case Distance::L1:
                 $op = '<+>';
                 break;
+            case Distance::Hamming:
+                $op = '<~>';
+                break;
+            case Distance::Jaccard:
+                $op = '<%>';
+                break;
             default:
                 throw new \InvalidArgumentException("Invalid distance");
         }
         $wrapped = $query->getGrammar()->wrap($column);
         $order = "$wrapped $op ?";
         $neighborDistance = $distance == Distance::InnerProduct ? "($order) * -1" : $order;
-        $vector = $value instanceof Vector ? $value : new Vector($value);
+        $vector = is_array($value) ? new Vector($value) : $value;
 
         // ideally preserve existing select, but does not appear to be a way to get columns
         $query->select()

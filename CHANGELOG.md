@@ -1,6 +1,6 @@
 ## 0.2.0 (unreleased)
 
-- Added `L1` distance
+- Added `L1`, `Hamming`, and `Jaccard` distances
 - Changed `Distance` to enum
 - Dropped support for PHP < 8.1
 - Dropped support for Laravel < 10
