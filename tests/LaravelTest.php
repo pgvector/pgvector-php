@@ -9,6 +9,7 @@ use Pgvector\Laravel\Distance;
 use Pgvector\Laravel\HasNeighbors;
 use Pgvector\Laravel\Vector;
 use Pgvector\Laravel\HalfVector;
+use Pgvector\Laravel\SparseVector;
 
 $capsule = new Capsule();
 $capsule->addConnection([
@@ -36,8 +37,8 @@ class Item extends Model
     use HasNeighbors;
 
     public $timestamps = false;
-    protected $fillable = ['id', 'embedding', 'half_embedding', 'binary_embedding'];
-    protected $casts = ['embedding' => Vector::class, 'half_embedding' => HalfVector::class];
+    protected $fillable = ['id', 'embedding', 'half_embedding', 'binary_embedding', 'sparse_embedding'];
+    protected $casts = ['embedding' => Vector::class, 'half_embedding' => HalfVector::class, 'sparse_embedding' => SparseVector::class];
 }
 
 final class LaravelTest extends TestCase
@@ -170,6 +171,48 @@ final class LaravelTest extends TestCase
         $neighbors = Item::query()->nearestNeighbors('binary_embedding', '101', Distance::Jaccard)->take(5)->get();
         $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
         $this->assertEqualsWithDelta([0, 1/3, 1], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
+    public function testSparsevecL2Distance()
+    {
+        $this->createItems('sparse_embedding');
+        $neighbors = Item::orderByRaw('sparse_embedding <-> ?', [SparseVector::fromDense([1, 1, 1])])->take(5)->get();
+        $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
+        $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], array_map(fn ($v) => $v->toArray(), $neighbors->pluck('sparse_embedding')->toArray()));
+    }
+
+    public function testSparsevecScopeL2Distance()
+    {
+        $this->createItems('sparse_embedding');
+        $neighbors = Item::query()->nearestNeighbors('sparse_embedding', '{1:1,2:1,3:1}/3', Distance::L2)->take(5)->get();
+        $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([0, 1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
+    public function testSparsevecScopeMaxInnerProduct()
+    {
+        $this->createItems('sparse_embedding');
+        $neighbors = Item::query()->nearestNeighbors('sparse_embedding', '{1:1,2:1,3:1}/3', Distance::InnerProduct)->take(5)->get();
+        $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([6, 4, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
+    public function testSparsevecInstance()
+    {
+        $this->createItems('sparse_embedding');
+        $item = Item::find(1);
+        $neighbors = $item->nearestNeighbors('sparse_embedding', Distance::L2)->take(5)->get();
+        $this->assertEquals([3, 2], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+    }
+
+    public function testSparsevecInstanceL1()
+    {
+        $this->createItems('sparse_embedding');
+        $item = Item::find(1);
+        $neighbors = $item->nearestNeighbors('sparse_embedding', Distance::L1)->take(5)->get();
+        $this->assertEquals([3, 2], $neighbors->pluck('id')->toArray());
+        $this->assertEqualsWithDelta([1, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
     public function testMissingAttribute()

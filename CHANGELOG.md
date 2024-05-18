@@ -1,6 +1,6 @@
 ## 0.2.0 (unreleased)
 
-- Added support for `halfvec` type
+- Added support for `halfvec` and `sparsevec` types
 - Added `L1`, `Hamming`, and `Jaccard` distances
 - Changed `Distance` to enum
 - Dropped support for PHP < 8.1
