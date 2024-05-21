@@ -169,7 +169,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([6, 4, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
-    public function testHalfvecInstance()
+    public function testHalfvecInstanceL2Distance()
     {
         $this->createItems('half_embedding');
         $item = Item::find(1);
@@ -178,7 +178,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
-    public function testHalfvecInstanceL1()
+    public function testHalfvecInstanceL1Distance()
     {
         $this->createItems('half_embedding');
         $item = Item::find(1);
@@ -187,7 +187,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([1, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
-    public function testBitHammingDistance()
+    public function testBitScopeHammingDistance()
     {
         Item::create(['id' => 1, 'binary_embedding' => '000']);
         Item::create(['id' => 2, 'binary_embedding' => '101']);
@@ -197,7 +197,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([0, 1, 2], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
-    public function testBitJaccardDistance()
+    public function testBitScopeJaccardDistance()
     {
         Item::create(['id' => 1, 'binary_embedding' => '000']);
         Item::create(['id' => 2, 'binary_embedding' => '101']);
@@ -231,7 +231,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([6, 4, 3], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
-    public function testSparsevecInstance()
+    public function testSparsevecInstanceL2Distance()
     {
         $this->createItems('sparse_embedding');
         $item = Item::find(1);
@@ -240,7 +240,7 @@ final class LaravelTest extends TestCase
         $this->assertEqualsWithDelta([1, sqrt(3)], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
-    public function testSparsevecInstanceL1()
+    public function testSparsevecInstanceL1Distance()
     {
         $this->createItems('sparse_embedding');
         $item = Item::find(1);
