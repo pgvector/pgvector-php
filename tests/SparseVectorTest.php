@@ -11,4 +11,10 @@ final class SparseVectorTest extends TestCase
         $embedding = SparseVector::fromDense([1, 0, 2, 0, 3, 0]);
         $this->assertEquals('{1:1,3:2,5:3}/6', (string) $embedding);
     }
+
+    public function testToArray()
+    {
+        $embedding = SparseVector::fromDense([1, 0, 2, 0, 3, 0]);
+        $this->assertEquals([1, 0, 2, 0, 3, 0], $embedding->toArray());
+    }
 }
