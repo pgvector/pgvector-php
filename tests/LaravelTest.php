@@ -204,7 +204,7 @@ final class LaravelTest extends TestCase
         Item::create(['id' => 3, 'binary_embedding' => '111']);
         $neighbors = Item::query()->nearestNeighbors('binary_embedding', '101', Distance::Jaccard)->take(5)->get();
         $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
-        $this->assertEqualsWithDelta([0, 1/3, 1], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+        $this->assertEqualsWithDelta([0, 1 / 3, 1], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
     public function testBitInstanceHammingDistance()
@@ -226,7 +226,7 @@ final class LaravelTest extends TestCase
         $item = Item::find(2);
         $neighbors = $item->nearestNeighbors('binary_embedding', Distance::Jaccard)->take(5)->get();
         $this->assertEquals([3, 1], $neighbors->pluck('id')->toArray());
-        $this->assertEqualsWithDelta([1/3, 1], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
+        $this->assertEqualsWithDelta([1 / 3, 1], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
     }
 
     public function testSparsevecL2Distance()
