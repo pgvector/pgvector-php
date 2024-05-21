@@ -189,9 +189,7 @@ final class LaravelTest extends TestCase
 
     public function testBitScopeHammingDistance()
     {
-        Item::create(['id' => 1, 'binary_embedding' => '000']);
-        Item::create(['id' => 2, 'binary_embedding' => '101']);
-        Item::create(['id' => 3, 'binary_embedding' => '111']);
+        $this->createBitItems();
         $neighbors = Item::query()->nearestNeighbors('binary_embedding', '101', Distance::Hamming)->take(5)->get();
         $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
         $this->assertEqualsWithDelta([0, 1, 2], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
@@ -199,9 +197,7 @@ final class LaravelTest extends TestCase
 
     public function testBitScopeJaccardDistance()
     {
-        Item::create(['id' => 1, 'binary_embedding' => '000']);
-        Item::create(['id' => 2, 'binary_embedding' => '101']);
-        Item::create(['id' => 3, 'binary_embedding' => '111']);
+        $this->createBitItems();
         $neighbors = Item::query()->nearestNeighbors('binary_embedding', '101', Distance::Jaccard)->take(5)->get();
         $this->assertEquals([2, 3, 1], $neighbors->pluck('id')->toArray());
         $this->assertEqualsWithDelta([0, 1 / 3, 1], $neighbors->pluck('neighbor_distance')->toArray(), 0.00001);
@@ -209,9 +205,7 @@ final class LaravelTest extends TestCase
 
     public function testBitInstanceHammingDistance()
     {
-        Item::create(['id' => 1, 'binary_embedding' => '000']);
-        Item::create(['id' => 2, 'binary_embedding' => '101']);
-        Item::create(['id' => 3, 'binary_embedding' => '111']);
+        $this->createBitItems();
         $item = Item::find(2);
         $neighbors = $item->nearestNeighbors('binary_embedding', Distance::Hamming)->take(5)->get();
         $this->assertEquals([3, 1], $neighbors->pluck('id')->toArray());
@@ -220,9 +214,7 @@ final class LaravelTest extends TestCase
 
     public function testBitInstanceJaccardDistance()
     {
-        Item::create(['id' => 1, 'binary_embedding' => '000']);
-        Item::create(['id' => 2, 'binary_embedding' => '101']);
-        Item::create(['id' => 3, 'binary_embedding' => '111']);
+        $this->createBitItems();
         $item = Item::find(2);
         $neighbors = $item->nearestNeighbors('binary_embedding', Distance::Jaccard)->take(5)->get();
         $this->assertEquals([3, 1], $neighbors->pluck('id')->toArray());
@@ -313,6 +305,13 @@ final class LaravelTest extends TestCase
     {
         foreach ([[1, 1, 1], [2, 2, 2], [1, 1, 2]] as $i => $v) {
             Item::create(['id' => $i + 1, $attribute => $v]);
+        }
+    }
+
+    private function createBitItems()
+    {
+        foreach (['000', '101', '111'] as $i => $v) {
+            Item::create(['id' => $i + 1, 'binary_embedding' => $v]);
         }
     }
 }
