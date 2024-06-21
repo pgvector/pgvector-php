@@ -10,6 +10,9 @@ class SparseVector
 
     public function __construct($dimensions, $indices, $values)
     {
+        if (count($indices) != count($values)) {
+            throw new \InvalidArgumentException("indices and values must be the same length");
+        }
         $this->dimensions = $dimensions;
         $this->indices = $indices;
         $this->values = $values;
