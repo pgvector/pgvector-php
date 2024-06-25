@@ -14,6 +14,12 @@ final class SparseVectorTest extends TestCase
         $this->assertEquals([1, 2, 3], $embedding->values());
     }
 
+    public function testFromMap()
+    {
+        $embedding = SparseVector::fromMap([2 => 2, 4 => 3, 0 => 1, 3 => 0], 6);
+        $this->assertEquals([1, 0, 2, 0, 3, 0], $embedding->toArray());
+    }
+
     public function testFromString()
     {
         $embedding = SparseVector::fromString('{1:1,3:2,5:3}/6');

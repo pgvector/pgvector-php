@@ -32,6 +32,21 @@ class SparseVector
         return new SparseVector($dimensions, $indices, $values);
     }
 
+    public static function fromMap($map, $dimensions)
+    {
+        $indices = [];
+        $values = [];
+        // no need to sort since binary format is not supported
+        foreach ($map as $i => $v) {
+            $fv = floatval($v);
+            if ($fv != 0) {
+                $indices[] = intval($i);
+                $values[] = $fv;
+            }
+        }
+        return new SparseVector($dimensions, $indices, $values);
+    }
+
     public static function fromString($value)
     {
         $parts = explode('/', $value, 2);
