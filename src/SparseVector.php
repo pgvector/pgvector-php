@@ -34,9 +34,10 @@ class SparseVector
 
     public static function fromMap($map, $dimensions)
     {
+        // okay to update in-place since parameter is not a reference
+        ksort($map);
         $indices = [];
         $values = [];
-        // no need to sort since binary format is not supported
         foreach ($map as $i => $v) {
             $fv = floatval($v);
             if ($fv != 0) {
