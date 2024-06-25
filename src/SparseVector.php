@@ -39,10 +39,9 @@ class SparseVector
         $indices = [];
         $values = [];
         foreach ($map as $i => $v) {
-            $fv = floatval($v);
-            if ($fv != 0) {
+            if ($v != 0) {
                 $indices[] = intval($i);
-                $values[] = $fv;
+                $values[] = floatval($v);
             }
         }
         return new SparseVector($dimensions, $indices, $values);
