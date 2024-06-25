@@ -56,6 +56,18 @@ class SparseVector
         return '{' . implode(',', $elements) . '}/' . $this->dimensions;
     }
 
+    public function dimensions() {
+        return $this->dimensions;
+    }
+
+    public function indices() {
+        return $this->indices;
+    }
+
+    public function values() {
+        return $this->values;
+    }
+
     public function toArray()
     {
         $result = array_fill(0, $this->dimensions, 0.0);
