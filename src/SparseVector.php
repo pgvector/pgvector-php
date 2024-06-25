@@ -71,15 +71,18 @@ class SparseVector
         return '{' . implode(',', $elements) . '}/' . $this->dimensions;
     }
 
-    public function dimensions() {
+    public function dimensions()
+    {
         return $this->dimensions;
     }
 
-    public function indices() {
+    public function indices()
+    {
         return $this->indices;
     }
 
-    public function values() {
+    public function values()
+    {
         return $this->values;
     }
 
