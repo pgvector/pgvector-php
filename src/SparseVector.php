@@ -13,9 +13,9 @@ class SparseVector
         if (count($indices) != count($values)) {
             throw new \InvalidArgumentException("indices and values must be the same length");
         }
-        $this->dimensions = $dimensions;
-        $this->indices = $indices;
-        $this->values = $values;
+        $this->dimensions = intval($dimensions);
+        $this->indices = array_map(fn ($v) => intval($v), $indices);
+        $this->values = array_map(fn ($v) => floatval($v), $values);
     }
 
     public static function fromDense($value)
