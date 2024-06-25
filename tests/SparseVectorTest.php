@@ -14,13 +14,13 @@ final class SparseVectorTest extends TestCase
         $this->assertEquals([1, 2, 3], $embedding->values());
     }
 
-    public function testFromMap()
+    public function testFromPairs()
     {
-        $map = [2 => 2, 4 => 3, 0 => 1, 3 => 0];
-        $embedding = SparseVector::fromMap($map, 6);
+        $pairs = [2 => 2, 4 => 3, 0 => 1, 3 => 0];
+        $embedding = SparseVector::fromPairs($pairs, 6);
         $this->assertEquals([1, 0, 2, 0, 3, 0], $embedding->toArray());
         $this->assertEquals([0, 2, 4], $embedding->indices());
-        $this->assertEquals([2, 4, 0, 3], array_keys($map));
+        $this->assertEquals([2, 4, 0, 3], array_keys($pairs));
     }
 
     public function testFromString()
