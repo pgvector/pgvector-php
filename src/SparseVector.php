@@ -32,13 +32,13 @@ class SparseVector
         return new SparseVector($dimensions, $indices, $values);
     }
 
-    public static function fromPairs($pairs, $dimensions)
+    public static function fromMap($map, $dimensions)
     {
-        // safe to update in-place since $pairs parameter is not a reference
-        ksort($pairs);
+        // okay to update in-place since parameter is not a reference
+        ksort($map);
         $indices = [];
         $values = [];
-        foreach ($pairs as $i => $v) {
+        foreach ($map as $i => $v) {
             if ($v != 0) {
                 $indices[] = intval($i);
                 $values[] = floatval($v);
