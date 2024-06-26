@@ -224,7 +224,7 @@ final class LaravelTest extends TestCase
     public function testSparsevecL2Distance()
     {
         $this->createItems('sparse_embedding');
-        $neighbors = Item::orderByRaw('sparse_embedding <-> ?', [SparseVector::fromDense([1, 1, 1])])->take(5)->get();
+        $neighbors = Item::orderByRaw('sparse_embedding <-> ?', [new SparseVector([1, 1, 1])])->take(5)->get();
         $this->assertEquals([1, 3, 2], $neighbors->pluck('id')->toArray());
         $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], array_map(fn ($v) => $v->toArray(), $neighbors->pluck('sparse_embedding')->toArray()));
     }

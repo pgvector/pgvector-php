@@ -8,58 +8,62 @@ class SparseVector
     protected $indices;
     protected $values;
 
-    public function __construct($dimensions, $indices, $values)
+    public function __construct($value, $dimensions = null)
     {
-        if (count($indices) != count($values)) {
-            throw new \InvalidArgumentException("indices and values must be the same length");
+        if (is_string($value)) {
+            $this->fromString($value);
+        } elseif (!is_null($dimensions)) {
+            $this->fromMap($value, $dimensions);
+        } else {
+            $this->fromDense($value);
         }
-        $this->dimensions = intval($dimensions);
-        $this->indices = array_map(fn ($v) => intval($v), $indices);
-        $this->values = array_map(fn ($v) => floatval($v), $values);
     }
 
-    public static function fromDense($value)
+    private function fromDense($value)
     {
-        $dimensions = count($value);
-        $indices = [];
-        $values = [];
+        $this->dimensions = count($value);
+        $this->indices = [];
+        $this->values = [];
+
         foreach ($value as $i => $v) {
             if ($v != 0) {
-                $indices[] = $i;
-                $values[] = floatval($v);
+                $this->indices[] = $i;
+                $this->values[] = floatval($v);
             }
         }
-        return new SparseVector($dimensions, $indices, $values);
     }
 
-    public static function fromMap($map, $dimensions)
+    private function fromMap($map, $dimensions)
     {
+        $this->dimensions = intval($dimensions);
+        $this->indices = [];
+        $this->values = [];
+
         // okay to update in-place since parameter is not a reference
         ksort($map);
-        $indices = [];
-        $values = [];
+
         foreach ($map as $i => $v) {
             if ($v != 0) {
-                $indices[] = intval($i);
-                $values[] = floatval($v);
+                $this->indices[] = intval($i);
+                $this->values[] = floatval($v);
             }
         }
-        return new SparseVector($dimensions, $indices, $values);
     }
 
-    public static function fromString($value)
+    private function fromString($value)
     {
         $parts = explode('/', $value, 2);
-        $dimensions = intval($parts[1]);
-        $indices = [];
-        $values = [];
+
+        $this->dimensions = intval($parts[1]);
+        $this->indices = [];
+        $this->values = [];
+
         $elements = explode(',', substr($parts[0], 1, -1));
         foreach ($elements as $e) {
             $ep = explode(':', $e, 2);
-            $indices[] = intval($ep[0]) - 1;
-            $values[] = floatval($ep[1]);
+            $this->indices[] = intval($ep[0]) - 1;
+            $this->values[] = floatval($ep[1]);
         }
-        return new SparseVector($dimensions, $indices, $values);
     }
 
     public function __toString()

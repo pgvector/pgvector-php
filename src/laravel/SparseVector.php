@@ -22,7 +22,7 @@ class SparseVector extends \Pgvector\SparseVector implements Castable
                     return null;
                 }
 
-                return SparseVector::fromString($value);
+                return new SparseVector($value);
             }
 
             public function set(mixed $model, string $key, mixed $value, array $attributes): ?string
@@ -32,7 +32,7 @@ class SparseVector extends \Pgvector\SparseVector implements Castable
                 }
 
                 if (is_array($value)) {
-                    $value = SparseVector::fromDense($value);
+                    $value = new SparseVector($value);
                 }
 
                 return (string) $value;

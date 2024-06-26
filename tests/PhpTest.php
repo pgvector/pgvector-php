@@ -25,9 +25,9 @@ final class PhpTest extends TestCase
         $binaryEmbedding1 = '000';
         $binaryEmbedding2 = '101';
         $binaryEmbedding3 = '111';
-        $sparseEmbedding1 = SparseVector::fromDense([1, 1, 1]);
-        $sparseEmbedding2 = SparseVector::fromDense([2, 2, 2]);
-        $sparseEmbedding3 = SparseVector::fromDense([1, 1, 2]);
+        $sparseEmbedding1 = new SparseVector([1, 1, 1]);
+        $sparseEmbedding2 = new SparseVector([2, 2, 2]);
+        $sparseEmbedding3 = new SparseVector([1, 1, 2]);
         pg_query_params($db, 'INSERT INTO items (embedding, half_embedding, binary_embedding, sparse_embedding) VALUES ($1, $2, $3, $4), ($5, $6, $7, $8), ($9, $10, $11, $12)', [$embedding1, $halfEmbedding1, $binaryEmbedding1, $sparseEmbedding1, $embedding2, $halfEmbedding2, $binaryEmbedding2, $sparseEmbedding2, $embedding3, $halfEmbedding3, $binaryEmbedding3, $sparseEmbedding3]);
 
         $ids = [];
@@ -51,7 +51,7 @@ final class PhpTest extends TestCase
         $this->assertEquals([1, 1, 1], (new Vector($embeddings[0]))->toArray());
         $this->assertEquals([1, 1, 1], (new HalfVector($halfEmbeddings[0]))->toArray());
         $this->assertEquals('000', $binaryEmbeddings[0]);
-        $this->assertEquals([1, 1, 1], SparseVector::fromString($sparseEmbeddings[0])->toArray());
+        $this->assertEquals([1, 1, 1], (new SparseVector($sparseEmbeddings[0]))->toArray());
 
         $rows = [$embedding1, $embedding2, $embedding3];
         pg_copy_from($db, 'items (embedding)', $rows);
