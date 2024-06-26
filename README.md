@@ -68,7 +68,7 @@ use Pgvector\Laravel\Distance;
 $neighbors = $item->nearestNeighbors('embedding', Distance::L2)->take(5)->get();
 ```
 
-Also supports `InnerProduct` and `Cosine` distance
+Also supports `InnerProduct`, `Cosine`, `L1`, `Hamming`, and `Jaccard` distance
 
 Get the nearest neighbors to a vector
 
