@@ -10,12 +10,24 @@ class SparseVector
 
     public function __construct($value, $dimensions = null)
     {
+        $numArgs = func_num_args();
+
         if (is_string($value)) {
+            if ($numArgs > 1) {
+                throw new \InvalidArgumentException("Extra argument");
+            }
+
             $this->fromString($value);
-        } elseif (!is_null($dimensions)) {
-            $this->fromMap($value, $dimensions);
         } else {
-            $this->fromDense($value);
+            if (!is_array($value)) {
+                throw new \InvalidArgumentException("Expected array");
+            }
+
+            if ($numArgs > 1) {
+                $this->fromMap($value, $dimensions);
+            } else {
+                $this->fromDense($value);
+            }
         }
     }
 
@@ -27,7 +39,7 @@ class SparseVector
 
         foreach ($value as $i => $v) {
             if ($v != 0) {
-                $this->indices[] = $i;
+                $this->indices[] = intval($i);
                 $this->values[] = floatval($v);
             }
         }

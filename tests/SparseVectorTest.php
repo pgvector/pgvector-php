@@ -31,6 +31,22 @@ final class SparseVectorTest extends TestCase
         $this->assertEquals([1, 2, 3], $embedding->values());
     }
 
+    public function testFromStringDimensions()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Extra argument');
+
+        new SparseVector('{1:1,3:2,5:3}/6', 6);
+    }
+
+    public function testInvalidInteger()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected array');
+
+        new SparseVector(1);
+    }
+
     public function testToString()
     {
         $embedding = new SparseVector([1, 0, 2, 0, 3, 0]);
