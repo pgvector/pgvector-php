@@ -16,7 +16,7 @@ function fetchEmbeddings($input)
     $url = 'https://api.openai.com/v1/embeddings';
     $data = [
         'input' => $input,
-        'model' => 'text-embedding-ada-002'
+        'model' => 'text-embedding-3-small'
     ];
     $opts = [
         'http' => [
