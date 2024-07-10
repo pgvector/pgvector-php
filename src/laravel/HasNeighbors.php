@@ -9,28 +9,7 @@ trait HasNeighbors
 {
     public function scopeNearestNeighbors(Builder $query, string $column, mixed $value, Distance $distance): void
     {
-        switch ($distance) {
-            case Distance::L2:
-                $op = '<->';
-                break;
-            case Distance::InnerProduct:
-                $op = '<#>';
-                break;
-            case Distance::Cosine:
-                $op = '<=>';
-                break;
-            case Distance::L1:
-                $op = '<+>';
-                break;
-            case Distance::Hamming:
-                $op = '<~>';
-                break;
-            case Distance::Jaccard:
-                $op = '<%>';
-                break;
-            default:
-                throw new \InvalidArgumentException("Invalid distance");
-        }
+        $op = $distance->operator();
         $wrapped = $query->getGrammar()->wrap($column);
         $order = "$wrapped $op ?";
         $neighborDistance = $distance == Distance::InnerProduct ? "($order) * -1" : $order;
