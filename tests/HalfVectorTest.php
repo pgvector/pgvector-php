@@ -8,14 +8,14 @@ final class HalfVectorTest extends TestCase
 {
     public function testToString()
     {
-        $embedding = new HalfVector([1, 1, 1]);
-        $this->assertEquals('[1,1,1]', (string) $embedding);
+        $embedding = new HalfVector([1, 2, 3]);
+        $this->assertEquals('[1,2,3]', (string) $embedding);
     }
 
     public function testToArray()
     {
-        $embedding = new HalfVector([1, 1, 1]);
-        $this->assertEquals([1, 1, 1], $embedding->toArray());
+        $embedding = new HalfVector([1, 2, 3]);
+        $this->assertEquals([1, 2, 3], $embedding->toArray());
     }
 
     public function testInvalidInteger()
