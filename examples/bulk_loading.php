@@ -4,7 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Pgvector\Vector;
 
-ini_set('memory_limit', '1G');
+ini_set('memory_limit', '512M');
 
 // generate random data
 $rows = 100000;
