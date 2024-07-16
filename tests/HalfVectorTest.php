@@ -55,4 +55,10 @@ final class HalfVectorTest extends TestCase
         $embedding = new HalfVector([]);
         $this->assertEquals('[]', (string) $embedding);
     }
+
+    public function testSplFixedArray()
+    {
+        $embedding = new HalfVector(SplFixedArray::fromArray([1, 2, 3]));
+        $this->assertEquals('[1,2,3]', (string) $embedding);
+    }
 }

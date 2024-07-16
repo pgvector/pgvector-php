@@ -19,6 +19,10 @@ class SparseVector
 
             $this->fromString($value);
         } else {
+            if ($value instanceof \SplFixedArray) {
+                $value = $value->toArray();
+            }
+
             if (!is_array($value)) {
                 throw new \InvalidArgumentException("Expected array");
             }

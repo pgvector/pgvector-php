@@ -55,4 +55,10 @@ final class VectorTest extends TestCase
         $embedding = new Vector([]);
         $this->assertEquals('[]', (string) $embedding);
     }
+
+    public function testSplFixedArray()
+    {
+        $embedding = new Vector(SplFixedArray::fromArray([1, 2, 3]));
+        $this->assertEquals('[1,2,3]', (string) $embedding);
+    }
 }

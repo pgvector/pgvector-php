@@ -19,6 +19,10 @@ class HalfVector
                 throw new \InvalidArgumentException("Invalid text representation");
             }
         } else {
+            if ($value instanceof \SplFixedArray) {
+                $value = $value->toArray();
+            }
+
             if (!is_array($value)) {
                 throw new \InvalidArgumentException("Expected array");
             }
