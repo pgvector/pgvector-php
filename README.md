@@ -16,6 +16,7 @@ Or check out some examples:
 - [Embeddings](examples/openai_embeddings.php) with OpenAI
 - [Binary embeddings](examples/cohere_embeddings.php) with Cohere
 - [Recommendations](examples/disco/example.php) with Disco
+- [Bulk loading](examples/bulk_loading.php) with `COPY`
 
 ### Laravel
 
