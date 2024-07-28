@@ -31,7 +31,8 @@ class SparseVector extends \Pgvector\SparseVector implements Castable
                     return null;
                 }
 
-                if (is_array($value)) {
+                // TODO use !($value instanceof SparseVector) in 0.3.0
+                if (is_array($value) || $value instanceof \SplFixedArray) {
                     $value = new SparseVector($value);
                 }
 
