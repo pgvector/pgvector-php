@@ -170,3 +170,10 @@ composer install
 createdb pgvector_php_test
 composer test
 ```
+
+To run an example:
+
+```sh
+createdb pgvector_example
+php examples/bulk_loading.php
+```
