@@ -2,7 +2,8 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-function generateFingerprint($molecule) {
+function generateFingerprint($molecule)
+{
     return RDKit\Molecule::fromSmiles($molecule)->morganFingerprint();
 }
 
