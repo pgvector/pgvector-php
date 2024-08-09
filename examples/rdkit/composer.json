@@ -1,0 +1,12 @@
+{
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../.."
+        }
+    ],
+    "require": {
+        "pgvector/pgvector": "dev-master",
+        "ankane/rdkit": "^0.1.0"
+    }
+}

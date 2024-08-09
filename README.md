@@ -15,6 +15,7 @@ Or check out some examples:
 
 - [Embeddings](examples/openai_embeddings.php) with OpenAI
 - [Binary embeddings](examples/cohere_embeddings.php) with Cohere
+- [Morgan fingerprints](examples/rdkit/example.php) with RDKit
 - [Recommendations](examples/disco/example.php) with Disco
 - [Bulk loading](examples/bulk_loading.php) with `COPY`
 
