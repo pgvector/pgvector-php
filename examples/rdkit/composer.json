@@ -8,5 +8,9 @@
     "require": {
         "pgvector/pgvector": "dev-master",
         "ankane/rdkit": "^0.1.0"
+    },
+    "scripts": {
+        "post-install-cmd": "RDKit\\Vendor::check",
+        "post-update-cmd": "RDKit\\Vendor::check"
     }
 }

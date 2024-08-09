@@ -6,7 +6,11 @@
         }
     ],
     "require": {
-        "ankane/disco": "^0.1.1",
+        "ankane/disco": "^0.2.0",
         "pgvector/pgvector": "dev-master"
+    },
+    "scripts": {
+        "post-install-cmd": "Disco\\Library::check",
+        "post-update-cmd": "Disco\\Library::check"
     }
 }
