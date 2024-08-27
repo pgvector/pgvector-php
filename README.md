@@ -13,11 +13,11 @@ Follow the instructions for your database library:
 
 Or check out some examples:
 
-- [Embeddings](examples/openai_embeddings.php) with OpenAI
-- [Binary embeddings](examples/cohere_embeddings.php) with Cohere
+- [Embeddings](examples/openai/example.php) with OpenAI
+- [Binary embeddings](examples/cohere/example.php) with Cohere
 - [Morgan fingerprints](examples/rdkit/example.php) with RDKit
 - [Recommendations](examples/disco/example.php) with Disco
-- [Bulk loading](examples/bulk_loading.php) with `COPY`
+- [Bulk loading](examples/loading/example.php) with `COPY`
 
 ### Laravel
 
@@ -141,7 +141,7 @@ pg_query($db, 'CREATE INDEX ON items USING hnsw (embedding vector_l2_ops)');
 pg_query($db, 'CREATE INDEX ON items USING ivfflat (embedding vector_l2_ops) WITH (lists = 100)');
 ```
 
-See a [full example](examples/pgsql.php)
+See a [full example](examples/pgsql/example.php)
 
 ## Upgrading
 
@@ -175,6 +175,8 @@ composer test
 To run an example:
 
 ```sh
+cd examples/loading
+composer install
 createdb pgvector_example
-php examples/bulk_loading.php
+php example.php
 ```
