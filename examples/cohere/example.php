@@ -11,7 +11,7 @@ pg_query($db, 'CREATE TABLE documents (id bigserial PRIMARY KEY, content text, e
 // https://docs.cohere.com/reference/embed
 function fetchEmbeddings($texts, $inputType)
 {
-    $apiKey = getenv('CO_API_KEY') or die("Set CO_API_KEY\n");;
+    $apiKey = getenv('CO_API_KEY') or die("Set CO_API_KEY\n");
     $url = 'https://api.cohere.com/v1/embed';
     $data = [
         'texts' => $texts,
