@@ -27,5 +27,3 @@ jobs:
           make
           sudo make install
       - run: composer test
-      - run: createdb pgvector_example
-      - run: php examples/pgsql.php
