@@ -23,7 +23,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^10",
-        "illuminate/database": ">= 10"
+        "illuminate/database": ">= 10",
+        "laravel/serializable-closure": "^1.3"
     },
     "extra": {
         "laravel": {
