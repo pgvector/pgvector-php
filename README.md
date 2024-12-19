@@ -15,6 +15,7 @@ Or check out some examples:
 
 - [Embeddings](examples/openai/example.php) with OpenAI
 - [Binary embeddings](examples/cohere/example.php) with Cohere
+- [Hybrid search](examples/hybrid/example.php) with Ollama (Reciprocal Rank Fusion)
 - [Morgan fingerprints](examples/rdkit/example.php) with RDKit
 - [Recommendations](examples/disco/example.php) with Disco
 - [Bulk loading](examples/loading/example.php) with `COPY`
