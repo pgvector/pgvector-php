@@ -33,10 +33,10 @@ function fetchEmbeddings($inputs)
     $context = stream_context_create($opts);
     $response = file_get_contents($url, false, $context);
     $embeddings = [];
-    foreach (json_decode($response, true) as $row) {
+    foreach (json_decode($response, true) as $item) {
         $embedding = [];
-        foreach ($row as $v) {
-            $embedding[$v['index']] = $v['value'];
+        foreach ($item as $e) {
+            $embedding[$e['index']] = $e['value'];
         }
         $embeddings[] = $embedding;
     }
