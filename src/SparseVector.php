@@ -35,7 +35,7 @@ class SparseVector
         }
     }
 
-    private function fromDense(array $value)
+    private function fromDense(array $value): void
     {
         $this->dimensions = count($value);
         $this->indices = [];
@@ -49,7 +49,7 @@ class SparseVector
         }
     }
 
-    private function fromMap(array $map, mixed $dimensions)
+    private function fromMap(array $map, mixed $dimensions): void
     {
         $this->dimensions = intval($dimensions);
         $this->indices = [];
@@ -66,7 +66,7 @@ class SparseVector
         }
     }
 
-    private function fromString(string $value)
+    private function fromString(string $value): void
     {
         $parts = explode('/', $value, 2);
 
