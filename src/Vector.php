@@ -4,9 +4,9 @@ namespace Pgvector;
 
 class Vector
 {
-    protected $value;
+    protected array $value;
 
-    public function __construct($value)
+    public function __construct(mixed $value)
     {
         if (is_string($value)) {
             try {
@@ -35,12 +35,12 @@ class Vector
         $this->value = $value;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return json_encode($this->value, JSON_THROW_ON_ERROR, 1);
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->value;
     }

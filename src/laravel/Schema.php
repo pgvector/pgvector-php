@@ -8,9 +8,9 @@ use Illuminate\Database\Schema\Grammars\PostgresGrammar;
 
 class Schema
 {
-    public static function register()
+    public static function register(): void
     {
-        PostgresGrammar::macro('typeVector', function (ColumnDefinition $column) {
+        PostgresGrammar::macro('typeVector', function (ColumnDefinition $column): string {
             if ($column->get('dimensions')) {
                 return 'vector(' . intval($column->get('dimensions')) . ')';
             } else {
@@ -18,7 +18,7 @@ class Schema
             }
         });
 
-        PostgresGrammar::macro('typeHalfvec', function (ColumnDefinition $column) {
+        PostgresGrammar::macro('typeHalfvec', function (ColumnDefinition $column): string {
             if ($column->get('dimensions')) {
                 return 'halfvec(' . intval($column->get('dimensions')) . ')';
             } else {
@@ -26,7 +26,7 @@ class Schema
             }
         });
 
-        PostgresGrammar::macro('typeBit', function (ColumnDefinition $column) {
+        PostgresGrammar::macro('typeBit', function (ColumnDefinition $column): string {
             if ($column->get('length')) {
                 return 'bit(' . intval($column->get('length')) . ')';
             } else {
@@ -34,7 +34,7 @@ class Schema
             }
         });
 
-        PostgresGrammar::macro('typeSparsevec', function (ColumnDefinition $column) {
+        PostgresGrammar::macro('typeSparsevec', function (ColumnDefinition $column): string {
             if ($column->get('dimensions')) {
                 return 'sparsevec(' . intval($column->get('dimensions')) . ')';
             } else {
@@ -42,19 +42,19 @@ class Schema
             }
         });
 
-        Blueprint::macro('vector', function ($column, $dimensions = null) {
+        Blueprint::macro('vector', function (string $column, mixed $dimensions = null): ColumnDefinition {
             return $this->addColumn('vector', $column, compact('dimensions'));
         });
 
-        Blueprint::macro('halfvec', function ($column, $dimensions = null) {
+        Blueprint::macro('halfvec', function (string $column, mixed $dimensions = null): ColumnDefinition {
             return $this->addColumn('halfvec', $column, compact('dimensions'));
         });
 
-        Blueprint::macro('bit', function ($column, $length = null) {
+        Blueprint::macro('bit', function (string $column, mixed $length = null): ColumnDefinition {
             return $this->addColumn('bit', $column, compact('length'));
         });
 
-        Blueprint::macro('sparsevec', function ($column, $dimensions = null) {
+        Blueprint::macro('sparsevec', function (string $column, mixed $dimensions = null): ColumnDefinition {
             return $this->addColumn('sparsevec', $column, compact('dimensions'));
         });
     }

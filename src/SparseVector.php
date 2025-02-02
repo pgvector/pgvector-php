@@ -4,11 +4,11 @@ namespace Pgvector;
 
 class SparseVector
 {
-    protected $dimensions;
-    protected $indices;
-    protected $values;
+    protected int $dimensions;
+    protected array $indices;
+    protected array $values;
 
-    public function __construct($value, $dimensions = null)
+    public function __construct(mixed $value, mixed $dimensions = null)
     {
         $numArgs = func_num_args();
 
@@ -35,7 +35,7 @@ class SparseVector
         }
     }
 
-    private function fromDense($value)
+    private function fromDense(array $value)
     {
         $this->dimensions = count($value);
         $this->indices = [];
@@ -49,7 +49,7 @@ class SparseVector
         }
     }
 
-    private function fromMap($map, $dimensions)
+    private function fromMap(array $map, mixed $dimensions)
     {
         $this->dimensions = intval($dimensions);
         $this->indices = [];
@@ -66,7 +66,7 @@ class SparseVector
         }
     }
 
-    private function fromString($value)
+    private function fromString(string $value)
     {
         $parts = explode('/', $value, 2);
 
@@ -82,7 +82,7 @@ class SparseVector
         }
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $elements = [];
         for ($i = 0; $i < count($this->indices); $i++) {
@@ -91,22 +91,22 @@ class SparseVector
         return '{' . implode(',', $elements) . '}/' . $this->dimensions;
     }
 
-    public function dimensions()
+    public function dimensions(): int
     {
         return $this->dimensions;
     }
 
-    public function indices()
+    public function indices(): array
     {
         return $this->indices;
     }
 
-    public function values()
+    public function values(): array
     {
         return $this->values;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         $result = array_fill(0, $this->dimensions, 0.0);
         for ($i = 0; $i < count($this->indices); $i++) {
