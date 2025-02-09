@@ -19,6 +19,7 @@ Or check out some examples:
 - [Sparse search](examples/sparse/example.php) with Text Embeddings Inference
 - [Morgan fingerprints](examples/rdkit/example.php) with RDKit
 - [Recommendations](examples/disco/example.php) with Disco
+- [Horizontal scaling](examples/citus/example.php) with Citus
 - [Bulk loading](examples/loading/example.php) with `COPY`
 
 ### Laravel
