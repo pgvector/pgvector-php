@@ -139,6 +139,12 @@ $config->addCustomNumericFunction('hamming_distance', 'Pgvector\Doctrine\Hamming
 $config->addCustomNumericFunction('jaccard_distance', 'Pgvector\Doctrine\JaccardDistance');
 ```
 
+Enable the extension
+
+```php
+$entityManager->getConnection()->executeStatement('CREATE EXTENSION IF NOT EXISTS vector');
+```
+
 Update your model
 
 ```php

@@ -38,6 +38,7 @@ final class DoctrineTest extends TestCase
         ], $config);
 
         $entityManager = new EntityManager($connection, $config);
+        $entityManager->getConnection()->executeStatement('CREATE EXTENSION IF NOT EXISTS vector');
 
         Type::addType('vector', 'Pgvector\Doctrine\VectorType');
         Type::addType('halfvec', 'Pgvector\Doctrine\HalfVectorType');
