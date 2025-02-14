@@ -128,6 +128,17 @@ Type::addType('bit', 'Pgvector\Doctrine\BitType');
 Type::addType('sparsevec', 'Pgvector\Doctrine\SparseVectorType');
 ```
 
+And the distance functions
+
+```php
+$config->addCustomNumericFunction('l2_distance', 'Pgvector\Doctrine\L2Distance');
+$config->addCustomNumericFunction('max_inner_product', 'Pgvector\Doctrine\MaxInnerProduct');
+$config->addCustomNumericFunction('cosine_distance', 'Pgvector\Doctrine\CosineDistance');
+$config->addCustomNumericFunction('l1_distance', 'Pgvector\Doctrine\L1Distance');
+$config->addCustomNumericFunction('hamming_distance', 'Pgvector\Doctrine\HammingDistance');
+$config->addCustomNumericFunction('jaccard_distance', 'Pgvector\Doctrine\JaccardDistance');
+```
+
 Update your model
 
 ```php
@@ -154,6 +165,17 @@ $item->setEmbedding(new Vector([1, 2, 3]));
 $entityManager->persist($item);
 $entityManager->flush();
 ```
+
+Get the nearest neighbors to a vector
+
+```php
+$neighbors = $entityManager->createQuery('SELECT i FROM Item i ORDER BY l2_distance(i.embedding, ?1)')
+    ->setParameter(1, new Vector([1, 2, 3]))
+    ->setMaxResults(5)
+    ->getResult();
+```
+
+Also supports `max_inner_product`, `cosine_distance`, `l1_distance`, `hamming_distance`, and `jaccard_distance`
 
 ### PgSql
 
