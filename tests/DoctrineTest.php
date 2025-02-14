@@ -32,6 +32,7 @@ final class DoctrineTest extends TestCase
 
         Type::addType('vector', 'Pgvector\Doctrine\VectorType');
         Type::addType('halfvec', 'Pgvector\Doctrine\HalfVectorType');
+        Type::addType('bit', 'Pgvector\Doctrine\BitType');
         Type::addType('sparsevec', 'Pgvector\Doctrine\SparseVectorType');
 
         $platform = $entityManager->getConnection()->getDatabasePlatform();
@@ -52,6 +53,7 @@ final class DoctrineTest extends TestCase
         $item = new DoctrineItem();
         $item->setEmbedding(new Vector([1, 2, 3]));
         $item->setHalfEmbedding(new HalfVector([4, 5, 6]));
+        $item->setBinaryEmbedding('101');
         $item->setSparseEmbedding(new SparseVector([7, 8, 9]));
         $entityManager->persist($item);
         $entityManager->flush();
@@ -60,6 +62,7 @@ final class DoctrineTest extends TestCase
         $item = $itemRepository->find(1);
         $this->assertEquals([1, 2, 3], $item->getEmbedding()->toArray());
         $this->assertEquals([4, 5, 6], $item->getHalfEmbedding()->toArray());
+        $this->assertEquals('101', $item->getBinaryEmbedding());
         $this->assertEquals([7, 8, 9], $item->getSparseEmbedding()->toArray());
     }
 }

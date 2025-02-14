@@ -20,6 +20,9 @@ class DoctrineItem
     #[ORM\Column(type: 'halfvec', length: 3)]
     private HalfVector $halfEmbedding;
 
+    #[ORM\Column(type: 'bit', length: 3)]
+    private string $binaryEmbedding;
+
     #[ORM\Column(type: 'sparsevec', length: 3)]
     private SparseVector $sparseEmbedding;
 
@@ -41,6 +44,16 @@ class DoctrineItem
     public function setHalfEmbedding(HalfVector $embedding): void
     {
         $this->halfEmbedding = $embedding;
+    }
+
+    public function getBinaryEmbedding(): string
+    {
+        return $this->binaryEmbedding;
+    }
+
+    public function setBinaryEmbedding(string $embedding): void
+    {
+        $this->binaryEmbedding = $embedding;
     }
 
     public function getSparseEmbedding(): SparseVector
