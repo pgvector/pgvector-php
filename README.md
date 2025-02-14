@@ -147,10 +147,10 @@ use Pgvector\Vector;
 #[ORM\Entity]
 class Item
 {
-    #[ORM\Column(type: 'vector', length: 3, nullable: true)]
-    private ?Vector $embedding;
+    #[ORM\Column(type: 'vector', length: 3)]
+    private Vector $embedding;
 
-    public function setEmbedding(?Vector $embedding): void
+    public function setEmbedding(Vector $embedding): void
     {
         $this->embedding = $embedding;
     }
