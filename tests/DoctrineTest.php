@@ -115,6 +115,17 @@ final class DoctrineTest extends TestCase
         $this->assertEquals([1, 2, 3], array_map(fn ($v) => $v->getId(), $neighbors));
     }
 
+    public function testVectorL1Distance()
+    {
+        $this->createItems();
+        $rsm = new ResultSetMappingBuilder(self::$em);
+        $rsm->addRootEntityFromClassMetadata('DoctrineItem', 'i');
+        $neighbors = self::$em->createNativeQuery('SELECT * FROM doctrine_items i ORDER BY embedding <+> ? LIMIT 5', $rsm)
+            ->setParameter(1, new Vector([1, 1, 1]))
+            ->getResult();
+        $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v->getId(), $neighbors));
+    }
+
     private function createItems()
     {
         foreach ([[1, 1, 1], [2, 2, 2], [1, 1, 2]] as $i => $v) {
