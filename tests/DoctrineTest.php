@@ -16,7 +16,9 @@ require_once __DIR__ . '/models/DoctrineItem.php';
 
 final class DoctrineTest extends TestCase
 {
-    public function testTypes()
+    private static $em;
+
+    public static function setUpBeforeClass(): void
     {
         $config = ORMSetup::createAttributeMetadataConfiguration(
             paths: [__DIR__ . '/models'],
@@ -38,6 +40,7 @@ final class DoctrineTest extends TestCase
         $platform = $entityManager->getConnection()->getDatabasePlatform();
         $platform->registerDoctrineTypeMapping('vector', 'vector');
         $platform->registerDoctrineTypeMapping('halfvec', 'halfvec');
+        $platform->registerDoctrineTypeMapping('bit', 'bit');
         $platform->registerDoctrineTypeMapping('sparsevec', 'sparsevec');
 
         $schemaManager = $entityManager->getConnection()->createSchemaManager();
@@ -50,15 +53,20 @@ final class DoctrineTest extends TestCase
         $schemaTool = new SchemaTool($entityManager);
         $schemaTool->createSchema([$entityManager->getClassMetadata('DoctrineItem')]);
 
+        self::$em = $entityManager;
+    }
+
+    public function testTypes()
+    {
         $item = new DoctrineItem();
         $item->setEmbedding(new Vector([1, 2, 3]));
         $item->setHalfEmbedding(new HalfVector([4, 5, 6]));
         $item->setBinaryEmbedding('101');
         $item->setSparseEmbedding(new SparseVector([7, 8, 9]));
-        $entityManager->persist($item);
-        $entityManager->flush();
+        self::$em->persist($item);
+        self::$em->flush();
 
-        $itemRepository = $entityManager->getRepository('DoctrineItem');
+        $itemRepository = self::$em->getRepository('DoctrineItem');
         $item = $itemRepository->find(1);
         $this->assertEquals([1, 2, 3], $item->getEmbedding()->toArray());
         $this->assertEquals([4, 5, 6], $item->getHalfEmbedding()->toArray());
