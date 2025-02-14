@@ -128,6 +128,47 @@ final class DoctrineTest extends TestCase
         $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v->getId(), $neighbors));
     }
 
+    public function testHalfvecL2Distance()
+    {
+        $this->createItems('halfEmbedding');
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY l2_distance(i.halfEmbedding, ?1)')
+            ->setParameter(1, new HalfVector([1, 1, 1]))
+            ->setMaxResults(5)
+            ->getResult();
+        $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v->getId(), $neighbors));
+        $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], array_map(fn ($v) => $v->getHalfEmbedding()->toArray(), $neighbors));
+    }
+
+    public function testHalfvecMaxInnerProduct()
+    {
+        $this->createItems('halfEmbedding');
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY max_inner_product(i.halfEmbedding, ?1)')
+            ->setParameter(1, new HalfVector([1, 1, 1]))
+            ->setMaxResults(5)
+            ->getResult();
+        $this->assertEquals([2, 3, 1], array_map(fn ($v) => $v->getId(), $neighbors));
+    }
+
+    public function testHalfvecCosineDistance()
+    {
+        $this->createItems('halfEmbedding');
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY cosine_distance(i.halfEmbedding, ?1)')
+            ->setParameter(1, new HalfVector([1, 1, 1]))
+            ->setMaxResults(5)
+            ->getResult();
+        $this->assertEquals([1, 2, 3], array_map(fn ($v) => $v->getId(), $neighbors));
+    }
+
+    public function testHalfvecL1Distance()
+    {
+        $this->createItems('halfEmbedding');
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY l1_distance(i.halfEmbedding, ?1)')
+            ->setParameter(1, new HalfVector([1, 1, 1]))
+            ->setMaxResults(5)
+            ->getResult();
+        $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v->getId(), $neighbors));
+    }
+
     public function testBitHammingDistance()
     {
         $this->createBitItems();
@@ -148,11 +189,58 @@ final class DoctrineTest extends TestCase
         $this->assertEquals([2, 3, 1], array_map(fn ($v) => $v->getId(), $neighbors));
     }
 
-    private function createItems()
+    public function testSparsevecL2Distance()
+    {
+        $this->createItems('sparseEmbedding');
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY l2_distance(i.sparseEmbedding, ?1)')
+            ->setParameter(1, new SparseVector([1, 1, 1]))
+            ->setMaxResults(5)
+            ->getResult();
+        $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v->getId(), $neighbors));
+        $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], array_map(fn ($v) => $v->getSparseEmbedding()->toArray(), $neighbors));
+    }
+
+    public function testSparsevecMaxInnerProduct()
+    {
+        $this->createItems('sparseEmbedding');
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY max_inner_product(i.sparseEmbedding, ?1)')
+            ->setParameter(1, new SparseVector([1, 1, 1]))
+            ->setMaxResults(5)
+            ->getResult();
+        $this->assertEquals([2, 3, 1], array_map(fn ($v) => $v->getId(), $neighbors));
+    }
+
+    public function testSparsevecCosineDistance()
+    {
+        $this->createItems('sparseEmbedding');
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY cosine_distance(i.sparseEmbedding, ?1)')
+            ->setParameter(1, new SparseVector([1, 1, 1]))
+            ->setMaxResults(5)
+            ->getResult();
+        $this->assertEquals([1, 2, 3], array_map(fn ($v) => $v->getId(), $neighbors));
+    }
+
+    public function testSparsevecL1Distance()
+    {
+        $this->createItems('sparseEmbedding');
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY l1_distance(i.sparseEmbedding, ?1)')
+            ->setParameter(1, new SparseVector([1, 1, 1]))
+            ->setMaxResults(5)
+            ->getResult();
+        $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v->getId(), $neighbors));
+    }
+
+    private function createItems($attribute = 'embedding')
     {
         foreach ([[1, 1, 1], [2, 2, 2], [1, 1, 2]] as $v) {
             $item = new DoctrineItem();
-            $item->setEmbedding(new Vector($v));
+            if ($attribute == 'halfEmbedding') {
+                $item->setHalfEmbedding(new HalfVector($v));
+            } else if ($attribute == 'sparseEmbedding') {
+                $item->setSparseEmbedding(new SparseVector($v));
+            } else {
+                $item->setEmbedding(new Vector($v));
+            }
             self::$em->persist($item);
         }
         self::$em->flush();
