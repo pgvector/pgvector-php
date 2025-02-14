@@ -2,7 +2,7 @@
 
 [pgvector](https://github.com/pgvector/pgvector) support for PHP
 
-Supports [Laravel](https://github.com/laravel/laravel) and [PgSql](https://www.php.net/manual/en/book.pgsql.php)
+Supports [Laravel](https://github.com/laravel/laravel), [Doctrine](https://github.com/doctrine/orm), and [PgSql](https://www.php.net/manual/en/book.pgsql.php)
 
 [![Build Status](https://github.com/pgvector/pgvector-php/actions/workflows/build.yml/badge.svg)](https://github.com/pgvector/pgvector-php/actions)
 
@@ -11,6 +11,7 @@ Supports [Laravel](https://github.com/laravel/laravel) and [PgSql](https://www.p
 Follow the instructions for your database library:
 
 - [Laravel](#laravel)
+- [Doctrine](#doctrine) [unreleased]
 - [PgSql](#pgsql)
 
 Or check out some examples:
@@ -107,6 +108,41 @@ public function down()
 ```
 
 Use `vector_ip_ops` for inner product and `vector_cosine_ops` for cosine distance
+
+### Doctrine
+
+Install the package
+
+```sh
+composer require pgvector/pgvector
+```
+
+Update your model
+
+```php
+use Pgvector\Vector;
+
+#[ORM\Entity]
+class Item
+{
+    #[ORM\Column(type: 'vector', length: 3, nullable: true)]
+    private ?Vector $embedding;
+
+    public function setEmbedding(?Vector $embedding): void
+    {
+        $this->embedding = $embedding;
+    }
+}
+```
+
+Insert a vector
+
+```php
+$item = new Item();
+$item->setEmbedding(new Vector([1, 2, 3]));
+$entityManager->persist($item);
+$entityManager->flush();
+```
 
 ### PgSql
 
