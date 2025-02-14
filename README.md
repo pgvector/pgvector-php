@@ -117,6 +117,17 @@ Install the package
 composer require pgvector/pgvector
 ```
 
+Register the types
+
+```php
+use Doctrine\DBAL\Types\Type;
+
+Type::addType('vector', 'Pgvector\Doctrine\VectorType');
+Type::addType('halfvec', 'Pgvector\Doctrine\HalfVectorType');
+Type::addType('bit', 'Pgvector\Doctrine\BitType');
+Type::addType('sparsevec', 'Pgvector\Doctrine\SparseVectorType');
+```
+
 Update your model
 
 ```php
