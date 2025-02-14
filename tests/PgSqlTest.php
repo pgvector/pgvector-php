@@ -6,7 +6,7 @@ use Pgvector\HalfVector;
 use Pgvector\SparseVector;
 use Pgvector\Vector;
 
-final class PhpTest extends TestCase
+final class PgSqlTest extends TestCase
 {
     public function testWorks()
     {

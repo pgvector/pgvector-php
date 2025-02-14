@@ -2,6 +2,8 @@
 
 [pgvector](https://github.com/pgvector/pgvector) support for PHP
 
+Supports [Laravel](https://github.com/laravel/laravel) and [PgSql](https://www.php.net/manual/en/book.pgsql.php)
+
 [![Build Status](https://github.com/pgvector/pgvector-php/actions/workflows/build.yml/badge.svg)](https://github.com/pgvector/pgvector-php/actions)
 
 ## Getting Started
@@ -9,7 +11,7 @@
 Follow the instructions for your database library:
 
 - [Laravel](#laravel)
-- [PHP](#php)
+- [PgSql](#pgsql)
 
 Or check out some examples:
 
@@ -106,7 +108,7 @@ public function down()
 
 Use `vector_ip_ops` for inner product and `vector_cosine_ops` for cosine distance
 
-### PHP
+### PgSql
 
 Enable the extension
 
