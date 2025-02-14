@@ -29,6 +29,8 @@ final class DoctrineTest extends TestCase
         $config->addCustomNumericFunction('max_inner_product', 'Pgvector\Doctrine\MaxInnerProduct');
         $config->addCustomNumericFunction('cosine_distance', 'Pgvector\Doctrine\CosineDistance');
         $config->addCustomNumericFunction('l1_distance', 'Pgvector\Doctrine\L1Distance');
+        $config->addCustomNumericFunction('hamming_distance', 'Pgvector\Doctrine\HammingDistance');
+        $config->addCustomNumericFunction('jaccard_distance', 'Pgvector\Doctrine\JaccardDistance');
 
         $connection = DriverManager::getConnection([
             'driver' => 'pgsql',
@@ -126,11 +128,41 @@ final class DoctrineTest extends TestCase
         $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v->getId(), $neighbors));
     }
 
+    public function testBitHammingDistance()
+    {
+        $this->createBitItems();
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY hamming_distance(i.binaryEmbedding, ?1)')
+            ->setParameter(1, '101')
+            ->setMaxResults(5)
+            ->getResult();
+        $this->assertEquals([2, 3, 1], array_map(fn ($v) => $v->getId(), $neighbors));
+    }
+
+    public function testBitJaccardDistance()
+    {
+        $this->createBitItems();
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY jaccard_distance(i.binaryEmbedding, ?1)')
+            ->setParameter(1, '101')
+            ->setMaxResults(5)
+            ->getResult();
+        $this->assertEquals([2, 3, 1], array_map(fn ($v) => $v->getId(), $neighbors));
+    }
+
     private function createItems()
     {
-        foreach ([[1, 1, 1], [2, 2, 2], [1, 1, 2]] as $i => $v) {
+        foreach ([[1, 1, 1], [2, 2, 2], [1, 1, 2]] as $v) {
             $item = new DoctrineItem();
             $item->setEmbedding(new Vector($v));
+            self::$em->persist($item);
+        }
+        self::$em->flush();
+    }
+
+    private function createBitItems()
+    {
+        foreach (['000', '101', '111'] as $v) {
+            $item = new DoctrineItem();
+            $item->setBinaryEmbedding($v);
             self::$em->persist($item);
         }
         self::$em->flush();
