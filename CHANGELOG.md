@@ -1,6 +1,6 @@
 ## 0.2.2 (unreleased)
 
-- Added experimental support for Doctrine
+- Added support for Doctrine
 
 ## 0.2.1 (2025-02-01)
 
