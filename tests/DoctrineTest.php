@@ -25,6 +25,10 @@ final class DoctrineTest extends TestCase
             paths: [__DIR__ . '/models'],
             isDevMode: true
         );
+        $config->addCustomNumericFunction('l2_distance', 'Pgvector\Doctrine\L2Distance');
+        $config->addCustomNumericFunction('max_inner_product', 'Pgvector\Doctrine\MaxInnerProduct');
+        $config->addCustomNumericFunction('cosine_distance', 'Pgvector\Doctrine\CosineDistance');
+        $config->addCustomNumericFunction('l1_distance', 'Pgvector\Doctrine\L1Distance');
 
         $connection = DriverManager::getConnection([
             'driver' => 'pgsql',
@@ -84,10 +88,9 @@ final class DoctrineTest extends TestCase
     public function testVectorL2Distance()
     {
         $this->createItems();
-        $rsm = new ResultSetMappingBuilder(self::$em);
-        $rsm->addRootEntityFromClassMetadata('DoctrineItem', 'i');
-        $neighbors = self::$em->createNativeQuery('SELECT * FROM doctrine_items i ORDER BY embedding <-> ? LIMIT 5', $rsm)
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY l2_distance(i.embedding, ?1)')
             ->setParameter(1, new Vector([1, 1, 1]))
+            ->setMaxResults(5)
             ->getResult();
         $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v->getId(), $neighbors));
         $this->assertEquals([[1, 1, 1], [1, 1, 2], [2, 2, 2]], array_map(fn ($v) => $v->getEmbedding()->toArray(), $neighbors));
@@ -96,10 +99,9 @@ final class DoctrineTest extends TestCase
     public function testVectorMaxInnerProduct()
     {
         $this->createItems();
-        $rsm = new ResultSetMappingBuilder(self::$em);
-        $rsm->addRootEntityFromClassMetadata('DoctrineItem', 'i');
-        $neighbors = self::$em->createNativeQuery('SELECT * FROM doctrine_items i ORDER BY embedding <#> ? LIMIT 5', $rsm)
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY max_inner_product(i.embedding, ?1)')
             ->setParameter(1, new Vector([1, 1, 1]))
+            ->setMaxResults(5)
             ->getResult();
         $this->assertEquals([2, 3, 1], array_map(fn ($v) => $v->getId(), $neighbors));
     }
@@ -107,10 +109,9 @@ final class DoctrineTest extends TestCase
     public function testVectorCosineDistance()
     {
         $this->createItems();
-        $rsm = new ResultSetMappingBuilder(self::$em);
-        $rsm->addRootEntityFromClassMetadata('DoctrineItem', 'i');
-        $neighbors = self::$em->createNativeQuery('SELECT * FROM doctrine_items i ORDER BY embedding <=> ? LIMIT 5', $rsm)
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY cosine_distance(i.embedding, ?1)')
             ->setParameter(1, new Vector([1, 1, 1]))
+            ->setMaxResults(5)
             ->getResult();
         $this->assertEquals([1, 2, 3], array_map(fn ($v) => $v->getId(), $neighbors));
     }
@@ -118,10 +119,9 @@ final class DoctrineTest extends TestCase
     public function testVectorL1Distance()
     {
         $this->createItems();
-        $rsm = new ResultSetMappingBuilder(self::$em);
-        $rsm->addRootEntityFromClassMetadata('DoctrineItem', 'i');
-        $neighbors = self::$em->createNativeQuery('SELECT * FROM doctrine_items i ORDER BY embedding <+> ? LIMIT 5', $rsm)
+        $neighbors = self::$em->createQuery('SELECT i FROM DoctrineItem i ORDER BY l1_distance(i.embedding, ?1)')
             ->setParameter(1, new Vector([1, 1, 1]))
+            ->setMaxResults(5)
             ->getResult();
         $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v->getId(), $neighbors));
     }
