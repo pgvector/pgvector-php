@@ -122,7 +122,7 @@ Register the types and distance functions
 ```php
 use Pgvector\Doctrine\PgvectorSetup;
 
-PgvectorSetup::register($entityManager);
+PgvectorSetup::registerTypes($entityManager);
 ```
 
 Enable the extension

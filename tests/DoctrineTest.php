@@ -34,7 +34,7 @@ final class DoctrineTest extends TestCase
 
         $entityManager = new EntityManager($connection, $config);
         $entityManager->getConnection()->executeStatement('CREATE EXTENSION IF NOT EXISTS vector');
-        PgvectorSetup::register($entityManager);
+        PgvectorSetup::registerTypes($entityManager);
 
         $schemaManager = $entityManager->getConnection()->createSchemaManager();
         try {

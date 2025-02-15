@@ -9,14 +9,14 @@ use Doctrine\ORM\EntityManager;
 
 abstract class PgvectorSetup
 {
-    public static function register(EntityManager $entityManager): void
+    public static function registerTypes(?EntityManager $entityManager): void
     {
-        self::registerTypes();
-        self::registerPlatformTypes($entityManager->getConnection()->getDatabasePlatform());
-        self::registerFunctions($entityManager->getConfiguration());
+        self::addTypes();
+        self::registerTypeMapping($entityManager->getConnection()->getDatabasePlatform());
+        self::addFunctions($entityManager->getConfiguration());
     }
 
-    private static function registerTypes(): void
+    private static function addTypes(): void
     {
         Type::addType('vector', 'Pgvector\Doctrine\VectorType');
         Type::addType('halfvec', 'Pgvector\Doctrine\HalfVectorType');
@@ -24,7 +24,7 @@ abstract class PgvectorSetup
         Type::addType('sparsevec', 'Pgvector\Doctrine\SparseVectorType');
     }
 
-    private static function registerPlatformTypes(AbstractPlatform $platform): void
+    private static function registerTypeMapping(AbstractPlatform $platform): void
     {
         $platform->registerDoctrineTypeMapping('vector', 'vector');
         $platform->registerDoctrineTypeMapping('halfvec', 'halfvec');
@@ -32,7 +32,7 @@ abstract class PgvectorSetup
         $platform->registerDoctrineTypeMapping('sparsevec', 'sparsevec');
     }
 
-    private static function registerFunctions(Configuration $config): void
+    private static function addFunctions(Configuration $config): void
     {
         $config->addCustomNumericFunction('l2_distance', 'Pgvector\Doctrine\L2Distance');
         $config->addCustomNumericFunction('max_inner_product', 'Pgvector\Doctrine\MaxInnerProduct');
