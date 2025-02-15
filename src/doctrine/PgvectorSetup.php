@@ -7,7 +7,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 
-abstract class PgvectorSetup
+class PgvectorSetup
 {
     public static function registerTypes(EntityManager $entityManager): void
     {
