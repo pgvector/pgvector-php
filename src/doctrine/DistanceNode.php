@@ -2,6 +2,7 @@
 
 namespace Pgvector\Doctrine;
 
+use Doctrine\ORM\Query\AST;
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
@@ -9,8 +10,8 @@ use Doctrine\ORM\Query\TokenType;
 
 abstract class DistanceNode extends FunctionNode
 {
-    public $left;
-    public $right;
+    public AST\Node|string $left;
+    public AST\Node|string $right;
 
     abstract protected function getOp(): string;
 
@@ -28,9 +29,9 @@ abstract class DistanceNode extends FunctionNode
     {
         return sprintf(
             '(%s %s %s)',
-            $this->left->dispatch($sqlWalker),
+            $sqlWalker->walkArithmeticPrimary($this->left),
             $this->getOp(),
-            $this->right->dispatch($sqlWalker),
+            $sqlWalker->walkArithmeticPrimary($this->right)
         );
     }
 }
