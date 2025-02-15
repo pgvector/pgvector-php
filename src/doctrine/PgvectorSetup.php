@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManager;
 
 abstract class PgvectorSetup
 {
-    public static function registerTypes(?EntityManager $entityManager): void
+    public static function registerTypes(EntityManager $entityManager): void
     {
         self::addTypes();
         self::registerTypeMapping($entityManager->getConnection()->getDatabasePlatform());
