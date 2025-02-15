@@ -11,7 +11,7 @@ Supports [Laravel](https://github.com/laravel/laravel), [Doctrine](https://githu
 Follow the instructions for your database library:
 
 - [Laravel](#laravel)
-- [Doctrine](#doctrine) [unreleased]
+- [Doctrine](#doctrine)
 - [PgSql](#pgsql)
 
 Or check out some examples:
