@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\Tools\SchemaTool;
+use Pgvector\Doctrine\PgvectorSetup;
 use Pgvector\HalfVector;
 use Pgvector\SparseVector;
 use Pgvector\Vector;
@@ -25,12 +26,7 @@ final class DoctrineTest extends TestCase
             paths: [__DIR__ . '/models'],
             isDevMode: true
         );
-        $config->addCustomNumericFunction('l2_distance', 'Pgvector\Doctrine\L2Distance');
-        $config->addCustomNumericFunction('max_inner_product', 'Pgvector\Doctrine\MaxInnerProduct');
-        $config->addCustomNumericFunction('cosine_distance', 'Pgvector\Doctrine\CosineDistance');
-        $config->addCustomNumericFunction('l1_distance', 'Pgvector\Doctrine\L1Distance');
-        $config->addCustomNumericFunction('hamming_distance', 'Pgvector\Doctrine\HammingDistance');
-        $config->addCustomNumericFunction('jaccard_distance', 'Pgvector\Doctrine\JaccardDistance');
+        PgvectorSetup::registerFunctions($config);
 
         $connection = DriverManager::getConnection([
             'driver' => 'pgsql',
@@ -39,17 +35,7 @@ final class DoctrineTest extends TestCase
 
         $entityManager = new EntityManager($connection, $config);
         $entityManager->getConnection()->executeStatement('CREATE EXTENSION IF NOT EXISTS vector');
-
-        Type::addType('vector', 'Pgvector\Doctrine\VectorType');
-        Type::addType('halfvec', 'Pgvector\Doctrine\HalfVectorType');
-        Type::addType('bit', 'Pgvector\Doctrine\BitType');
-        Type::addType('sparsevec', 'Pgvector\Doctrine\SparseVectorType');
-
-        $platform = $entityManager->getConnection()->getDatabasePlatform();
-        $platform->registerDoctrineTypeMapping('vector', 'vector');
-        $platform->registerDoctrineTypeMapping('halfvec', 'halfvec');
-        $platform->registerDoctrineTypeMapping('bit', 'bit');
-        $platform->registerDoctrineTypeMapping('sparsevec', 'sparsevec');
+        PgvectorSetup::registerTypes($entityManager);
 
         $schemaManager = $entityManager->getConnection()->createSchemaManager();
         try {

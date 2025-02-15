@@ -117,26 +117,18 @@ Install the package
 composer require pgvector/pgvector
 ```
 
-Register the types
+Register the distance functions
 
 ```php
-use Doctrine\DBAL\Types\Type;
+use Pgvector\Doctrine\PgvectorSetup;
 
-Type::addType('vector', 'Pgvector\Doctrine\VectorType');
-Type::addType('halfvec', 'Pgvector\Doctrine\HalfVectorType');
-Type::addType('bit', 'Pgvector\Doctrine\BitType');
-Type::addType('sparsevec', 'Pgvector\Doctrine\SparseVectorType');
+PgvectorSetup::registerFunctions($config);
 ```
 
-And the distance functions
+And the types
 
 ```php
-$config->addCustomNumericFunction('l2_distance', 'Pgvector\Doctrine\L2Distance');
-$config->addCustomNumericFunction('max_inner_product', 'Pgvector\Doctrine\MaxInnerProduct');
-$config->addCustomNumericFunction('cosine_distance', 'Pgvector\Doctrine\CosineDistance');
-$config->addCustomNumericFunction('l1_distance', 'Pgvector\Doctrine\L1Distance');
-$config->addCustomNumericFunction('hamming_distance', 'Pgvector\Doctrine\HammingDistance');
-$config->addCustomNumericFunction('jaccard_distance', 'Pgvector\Doctrine\JaccardDistance');
+PgvectorSetup::registerTypes($entityManager);
 ```
 
 Enable the extension
