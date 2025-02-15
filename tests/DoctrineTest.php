@@ -26,7 +26,6 @@ final class DoctrineTest extends TestCase
             paths: [__DIR__ . '/models'],
             isDevMode: true
         );
-        PgvectorSetup::registerFunctions($config);
 
         $connection = DriverManager::getConnection([
             'driver' => 'pgsql',
@@ -35,7 +34,7 @@ final class DoctrineTest extends TestCase
 
         $entityManager = new EntityManager($connection, $config);
         $entityManager->getConnection()->executeStatement('CREATE EXTENSION IF NOT EXISTS vector');
-        PgvectorSetup::registerTypes($entityManager);
+        PgvectorSetup::register($entityManager);
 
         $schemaManager = $entityManager->getConnection()->createSchemaManager();
         try {

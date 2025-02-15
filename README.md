@@ -117,18 +117,12 @@ Install the package
 composer require pgvector/pgvector
 ```
 
-Register the distance functions
+Register the types and distance functions
 
 ```php
 use Pgvector\Doctrine\PgvectorSetup;
 
-PgvectorSetup::registerFunctions($config);
-```
-
-And the types
-
-```php
-PgvectorSetup::registerTypes($entityManager);
+PgvectorSetup::register($entityManager);
 ```
 
 Enable the extension
