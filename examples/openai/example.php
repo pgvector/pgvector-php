@@ -10,7 +10,7 @@ pg_query($db, 'CREATE EXTENSION IF NOT EXISTS vector');
 pg_query($db, 'DROP TABLE IF EXISTS documents');
 pg_query($db, 'CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding vector(1536))');
 
-function fetchEmbeddings($input)
+function embed($input)
 {
     $apiKey = getenv('OPENAI_API_KEY') or die("Set OPENAI_API_KEY\n");
     $url = 'https://api.openai.com/v1/embeddings';
@@ -35,14 +35,14 @@ $input = [
   'The cat is purring',
   'The bear is growling'
 ];
-$embeddings = fetchEmbeddings($input);
-
+$embeddings = embed($input);
 foreach ($input as $i => $content) {
     pg_query_params($db, 'INSERT INTO documents (content, embedding) VALUES ($1, $2)', [$content, new Vector($embeddings[$i])]);
 }
 
-$documentId = 2;
-$result = pg_query_params($db, 'SELECT * FROM documents WHERE id != $1 ORDER BY embedding <=> (SELECT embedding FROM documents WHERE id = $1) LIMIT 5', [$documentId]);
+$query = 'forest';
+$queryEmbedding = embed([$query])[0];
+$result = pg_query_params($db, 'SELECT * FROM documents ORDER BY embedding <=> $1 LIMIT 5', [new Vector($queryEmbedding)]);
 while ($row = pg_fetch_array($result)) {
     echo $row['content'] . "\n";
 }

@@ -17,7 +17,7 @@ pg_query($db, 'CREATE EXTENSION IF NOT EXISTS vector');
 pg_query($db, 'DROP TABLE IF EXISTS documents');
 pg_query($db, 'CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding sparsevec(30522))');
 
-function fetchEmbeddings($inputs)
+function embed($inputs)
 {
     $url = 'http://localhost:3000/embed_sparse';
     $data = [
@@ -48,14 +48,13 @@ $input = [
   'The cat is purring',
   'The bear is growling'
 ];
-$embeddings = fetchEmbeddings($input);
-
+$embeddings = embed($input);
 foreach ($input as $i => $content) {
     pg_query_params($db, 'INSERT INTO documents (content, embedding) VALUES ($1, $2)', [$content, new SparseVector($embeddings[$i], 30522)]);
 }
 
 $query = 'forest';
-$queryEmbedding = fetchEmbeddings([$query])[0];
+$queryEmbedding = embed([$query])[0];
 $result = pg_query_params($db, 'SELECT content FROM documents ORDER BY embedding <#> $1 LIMIT 5', [new SparseVector($queryEmbedding, 30522)]);
 while ($row = pg_fetch_array($result)) {
     echo $row['content'] . "\n";

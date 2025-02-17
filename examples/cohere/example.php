@@ -9,7 +9,7 @@ pg_query($db, 'DROP TABLE IF EXISTS documents');
 pg_query($db, 'CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding bit(1024))');
 
 // https://docs.cohere.com/reference/embed
-function fetchEmbeddings($texts, $inputType)
+function embed($texts, $inputType)
 {
     $apiKey = getenv('CO_API_KEY') or die("Set CO_API_KEY\n");
     $url = 'https://api.cohere.com/v1/embed';
@@ -36,13 +36,13 @@ $input = [
   'The cat is purring',
   'The bear is growling'
 ];
-$embeddings = fetchEmbeddings($input, 'search_document');
+$embeddings = embed($input, 'search_document');
 foreach ($input as $i => $content) {
     pg_query_params($db, 'INSERT INTO documents (content, embedding) VALUES ($1, $2)', [$content, $embeddings[$i]]);
 }
 
 $query = 'forest';
-$queryEmbedding = fetchEmbeddings([$query], 'search_query')[0];
+$queryEmbedding = embed([$query], 'search_query')[0];
 $result = pg_query_params($db, 'SELECT * FROM documents ORDER BY embedding <~> $1 LIMIT 5', [$queryEmbedding]);
 while ($row = pg_fetch_array($result)) {
     echo $row['content'] . "\n";

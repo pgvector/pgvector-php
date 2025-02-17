@@ -11,8 +11,12 @@ pg_query($db, 'DROP TABLE IF EXISTS documents');
 pg_query($db, 'CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding vector(768))');
 pg_query($db, "CREATE INDEX ON documents USING GIN (to_tsvector('english', content))");
 
-function fetchEmbeddings($input)
+function embed($input, $taskType)
 {
+    // nomic-embed-text uses a task prefix
+    // https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
+    $input = array_map(fn($v) => $taskType . ': ' . $v, $input);
+
     $url = 'http://localhost:11434/api/embed';
     $data = [
         'input' => $input,
@@ -35,7 +39,7 @@ $input = [
   'The cat is purring',
   'The bear is growling'
 ];
-$embeddings = fetchEmbeddings($input);
+$embeddings = embed($input, 'search_document');
 
 foreach ($input as $i => $content) {
     pg_query_params($db, 'INSERT INTO documents (content, embedding) VALUES ($1, $2)', [$content, new Vector($embeddings[$i])]);
@@ -65,7 +69,7 @@ ORDER BY score DESC
 LIMIT 5
 SQL;
 $query = 'growling bear';
-$queryEmbedding = fetchEmbeddings($query)[0];
+$queryEmbedding = embed([$query], 'search_query')[0];
 $k = 60;
 $result = pg_query_params($db, $sql, [$query, new Vector($queryEmbedding), $k]);
 while ($row = pg_fetch_array($result)) {
