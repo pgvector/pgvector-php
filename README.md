@@ -209,6 +209,77 @@ pg_query($db, 'CREATE INDEX ON items USING ivfflat (embedding vector_l2_ops) WIT
 
 See a [full example](examples/pgsql/example.php)
 
+## Reference
+
+### Vectors
+
+Create a vector from an array
+
+```php
+$vec = new Vector([1, 2, 3]);
+```
+
+Get an array
+
+```php
+$arr = $vec->toArray();
+```
+
+### Half Vectors
+
+Create a half vector from an array
+
+```php
+$vec = new HalfVector([1, 2, 3]);
+```
+
+Get an array
+
+```php
+$arr = $vec->toArray();
+```
+
+### Sparse Vectors
+
+Create a sparse vector from an indexed array
+
+```php
+$vec = new SparseVector([1, 0, 2, 0, 3, 0]);
+```
+
+Or an associative array of non-zero elements
+
+```php
+$elements = [0 => 1, 2 => 2, 4 => 3];
+$vec = new SparseVector($elements, 6);
+```
+
+Note: Indices start at 0
+
+Get the number of dimensions
+
+```php
+$dim = $vec->dimensions();
+```
+
+Get the indices of non-zero elements
+
+```php
+$indices = $vec->indices();
+```
+
+Get the values of non-zero elements
+
+```php
+$values = $vec->values();
+```
+
+Get an array
+
+```php
+$arr = $vec->toArray();
+```
+
 ## Upgrading
 
 ### 0.1.4
