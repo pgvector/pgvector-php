@@ -15,7 +15,7 @@ function embed($input, $taskType)
 {
     // nomic-embed-text uses a task prefix
     // https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
-    $input = array_map(fn($v) => $taskType . ': ' . $v, $input);
+    $input = array_map(fn ($v) => $taskType . ': ' . $v, $input);
 
     $url = 'http://localhost:11434/api/embed';
     $data = [
