@@ -31,9 +31,9 @@ function embed($input)
 }
 
 $input = [
-  'The dog is barking',
-  'The cat is purring',
-  'The bear is growling'
+    'The dog is barking',
+    'The cat is purring',
+    'The bear is growling'
 ];
 $embeddings = embed($input);
 foreach ($input as $i => $content) {

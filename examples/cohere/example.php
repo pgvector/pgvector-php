@@ -32,9 +32,9 @@ function embed($texts, $inputType)
 }
 
 $input = [
-  'The dog is barking',
-  'The cat is purring',
-  'The bear is growling'
+    'The dog is barking',
+    'The cat is purring',
+    'The bear is growling'
 ];
 $embeddings = embed($input, 'search_document');
 foreach ($input as $i => $content) {
