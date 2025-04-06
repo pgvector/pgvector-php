@@ -41,5 +41,7 @@ final class CodeIgniterTest extends TestCase
         $escaped = $db->escape(new Vector([1, 1, 1]));
         $items = $itemModel->orderBy("embedding <-> $escaped")->findAll();
         $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v['id'], $items));
+        // TODO use assertSame
+        $this->assertEquals(new Vector([1, 1, 2]), $items[1]['embedding']);
     }
 }
