@@ -38,7 +38,8 @@ final class CodeIgniterTest extends TestCase
         $itemModel->insert(['embedding' => new Vector([2, 2, 2])], false);
         $itemModel->insert(['embedding' => new Vector([1, 1, 2])], false);
 
-        $items = $itemModel->orderBy("embedding <-> '[1,1,1]'")->findAll();
+        $escaped = $db->escape(new Vector([1, 1, 1]));
+        $items = $itemModel->orderBy("embedding <-> $escaped")->findAll();
         $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v['id'], $items));
     }
 }
