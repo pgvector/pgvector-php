@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Config\BaseService;
 use CodeIgniter\Config\Factories;
+use CodeIgniter\DataCaster\Cast\BaseCast;
 use CodeIgniter\Database\Config;
 use CodeIgniter\Model;
 use CodeIgniter\Settings\Settings;
@@ -14,10 +15,26 @@ use CodeIgniter\Test\DatabaseTestTrait;
 use Config\Database;
 use Pgvector\Vector;
 
+class CastVector extends BaseCast
+{
+    public static function get(mixed $value, array $params = [], ?object $helper = null): Vector
+    {
+        return new Vector($value);
+    }
+}
+
 class ItemModel extends Model
 {
     protected $table = 'ci_items';
     protected $allowedFields = ['embedding'];
+
+    protected array $casts = [
+        'embedding' => 'vector',
+    ];
+
+    protected array $castHandlers = [
+        'vector' => CastVector::class,
+    ];
 }
 
 final class CodeIgniterTest extends TestCase
@@ -41,7 +58,7 @@ final class CodeIgniterTest extends TestCase
         $escaped = $db->escape(new Vector([1, 1, 1]));
         $items = $itemModel->orderBy("embedding <-> $escaped")->findAll();
         $this->assertEquals([1, 3, 2], array_map(fn ($v) => $v['id'], $items));
-        // TODO use assertSame
         $this->assertEquals(new Vector([1, 1, 2]), $items[1]['embedding']);
+        $this->assertInstanceOf(Vector::class, $items[1]['embedding']);
     }
 }
