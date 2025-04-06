@@ -23,6 +23,7 @@
         "php": ">= 8.1"
     },
     "require-dev": {
+        "codeigniter4/framework": "^4",
         "doctrine/dbal": "^4",
         "doctrine/orm": "^3",
         "phpunit/phpunit": "^10",
