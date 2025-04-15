@@ -2,7 +2,7 @@
 
 [pgvector](https://github.com/pgvector/pgvector) support for PHP
 
-Supports [Laravel](https://github.com/laravel/laravel), [Doctrine](https://github.com/doctrine/orm), and [PgSql](https://www.php.net/manual/en/book.pgsql.php)
+Supports [Laravel](https://github.com/laravel/laravel), [Doctrine](https://github.com/doctrine/orm), [CodeIgniter](https://github.com/codeigniter4/CodeIgniter4), and [PgSql](https://www.php.net/manual/en/book.pgsql.php)
 
 [![Build Status](https://github.com/pgvector/pgvector-php/actions/workflows/build.yml/badge.svg)](https://github.com/pgvector/pgvector-php/actions)
 
@@ -12,6 +12,7 @@ Follow the instructions for your database library:
 
 - [Laravel](#laravel)
 - [Doctrine](#doctrine)
+- [CodeIgniter](#codeigniter)
 - [PgSql](#pgsql)
 
 Or check out some examples:
@@ -168,6 +169,10 @@ $neighbors = $entityManager->createQuery('SELECT i FROM Item i ORDER BY l2_dista
 ```
 
 Also supports `max_inner_product`, `cosine_distance`, `l1_distance`, `hamming_distance`, and `jaccard_distance`
+
+### CodeIgniter
+
+todo
 
 ### PgSql
 
