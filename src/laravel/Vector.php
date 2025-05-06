@@ -5,8 +5,9 @@ namespace Pgvector\Laravel;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use Livewire\Wireable;
 
-class Vector extends \Pgvector\Vector implements Castable
+class Vector extends \Pgvector\Vector implements Castable, Wireable
 {
     public static function castUsing(array $arguments): CastsAttributes
     {
@@ -37,8 +38,18 @@ class Vector extends \Pgvector\Vector implements Castable
                     $value = new Vector($value);
                 }
 
-                return (string) $value;
+                return (string)$value;
             }
         };
+    }
+
+    public function toLivewire(): array
+    {
+        return $this->value;
+    }
+
+    public static function fromLivewire($value): Vector
+    {
+        return new Vector($value);
     }
 }

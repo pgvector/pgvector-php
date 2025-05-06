@@ -28,7 +28,8 @@
         "phpunit/phpunit": "^10",
         "illuminate/database": ">= 10",
         "laravel/serializable-closure": "^1.3",
-        "symfony/cache": "^6"
+        "symfony/cache": "^6",
+        "livewire/livewire": ">= 2"
     },
     "extra": {
         "laravel": {
