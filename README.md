@@ -239,7 +239,7 @@ Enable the extension
 $entityManager->getConnection()->executeStatement('CREATE EXTENSION IF NOT EXISTS vector');
 ```
 
-Update your model
+Update your entity
 
 ```php
 use Pgvector\Vector;
