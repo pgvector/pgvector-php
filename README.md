@@ -2,7 +2,7 @@
 
 [pgvector](https://github.com/pgvector/pgvector) support for PHP
 
-Supports [Laravel](https://github.com/laravel/laravel), [Doctrine](https://github.com/doctrine/orm), and [PgSql](https://www.php.net/manual/en/book.pgsql.php)
+Supports [Laravel](https://github.com/laravel/laravel), [Symfony](https://github.com/symfony/symfony), [Doctrine](https://github.com/doctrine/orm), and [PgSql](https://www.php.net/manual/en/book.pgsql.php)
 
 [![Build Status](https://github.com/pgvector/pgvector-php/actions/workflows/build.yml/badge.svg)](https://github.com/pgvector/pgvector-php/actions)
 
@@ -11,6 +11,7 @@ Supports [Laravel](https://github.com/laravel/laravel), [Doctrine](https://githu
 Follow the instructions for your database library:
 
 - [Laravel](#laravel)
+- [Symfony](#symfony)
 - [Doctrine](#doctrine)
 - [PgSql](#pgsql)
 
@@ -108,6 +109,113 @@ public function down()
 ```
 
 Use `vector_ip_ops` for inner product and `vector_cosine_ops` for cosine distance
+
+### Symfony
+
+Install the package
+
+```sh
+composer require pgvector/pgvector
+```
+
+Register the types and distance functions in `config/packages/doctrine.yaml`
+
+```yaml
+doctrine:
+    dbal:
+        types:
+            vector: Pgvector\Doctrine\VectorType
+            halfvec: Pgvector\Doctrine\HalfVectorType
+            bit: Pgvector\Doctrine\BitType
+            sparsevec: Pgvector\Doctrine\SparseVectorType
+    orm:
+        dql:
+            numeric_functions:
+                l2_distance: Pgvector\Doctrine\L2Distance
+                max_inner_product: Pgvector\Doctrine\MaxInnerProduct
+                cosine_distance: Pgvector\Doctrine\CosineDistance
+                l1_distance: Pgvector\Doctrine\L1Distance
+                hamming_distance: Pgvector\Doctrine\HammingDistance
+                jaccard_distance: Pgvector\Doctrine\JaccardDistance
+```
+
+Create a migration to enable the extension
+
+```sh
+php bin/console doctrine:migrations:generate
+```
+
+And update it
+
+```php
+    public function up(Schema $schema): void
+    {
+        $this->addSql('CREATE EXTENSION vector');
+    }
+
+    public function down(Schema $schema): void
+    {
+        $this->addSql('DROP EXTENSION vector');
+    }
+```
+
+Migrate
+
+```sh
+php bin/console doctrine:migrations:migrate
+```
+
+Update your entity
+
+```php
+use Pgvector\Vector;
+
+#[ORM\Entity(repositoryClass: ItemRepository::class)]
+class Item
+{
+    #[ORM\Column(type: 'vector', length: 3)]
+    private ?Vector $embedding = null;
+
+    public function getEmbedding(): ?Vector
+    {
+        return $this->embedding;
+    }
+
+    public function setEmbedding(Vector $embedding): static
+    {
+        $this->embedding = $embedding;
+
+        return $this;
+    }
+}
+```
+
+Migrate
+
+```sh
+php bin/console make:migration
+php bin/console doctrine:migrations:migrate
+```
+
+Insert a vector
+
+```php
+$item = new Item();
+$item->setEmbedding(new Vector([1, 2, 3]));
+$entityManager->persist($item);
+$entityManager->flush();
+```
+
+Get the nearest neighbors to a vector
+
+```php
+$neighbors = $entityManager->createQuery('SELECT i FROM App\Entity\Item i ORDER BY l2_distance(i.embedding, ?1)')
+    ->setParameter(1, new Vector([1, 2, 3]))
+    ->setMaxResults(5)
+    ->getResult();
+```
+
+Also supports `max_inner_product`, `cosine_distance`, `l1_distance`, `hamming_distance`, and `jaccard_distance`
 
 ### Doctrine
 
