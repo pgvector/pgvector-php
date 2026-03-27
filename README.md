@@ -28,6 +28,8 @@ Or check out some examples:
 
 ### Laravel
 
+Note: The [Laravel AI SDK](https://laravel.com/docs/13.x/ai-sdk#querying-embeddings) also supports the `vector` type
+
 Install the package
 
 ```sh
