@@ -43,7 +43,7 @@ php artisan vendor:publish --tag="pgvector-migrations"
 php artisan migrate
 ```
 
-You can now use the `vector` type in future migrations
+You can now use the `vector`, `halfvec`, `bit`, and `sparsevec` types in future migrations
 
 ```php
 Schema::create('items', function (Blueprint $table) {
