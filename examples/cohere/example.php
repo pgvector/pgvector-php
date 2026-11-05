@@ -6,7 +6,7 @@ $db = pg_connect('postgres://localhost/pgvector_example');
 
 pg_query($db, 'CREATE EXTENSION IF NOT EXISTS vector');
 pg_query($db, 'DROP TABLE IF EXISTS documents');
-pg_query($db, 'CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding bit(1536))');
+pg_query($db, 'CREATE TABLE documents (id bigserial PRIMARY KEY, content text, embedding bit(2048))');
 
 // https://docs.cohere.com/reference/embed
 function embed($texts, $inputType)
@@ -15,7 +15,7 @@ function embed($texts, $inputType)
     $url = 'https://api.cohere.com/v2/embed';
     $data = [
         'texts' => $texts,
-        'model' => 'embed-v4.0',
+        'model' => 'embed-v5.0-pro',
         'input_type' => $inputType,
         'embedding_types' => ['ubinary']
     ];
